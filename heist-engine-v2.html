@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>THE HEIST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --felt: #1b3d1b; --felt-dark: #122912; --felt-deep: #0c1e0c;
+  --gold: #c9a84c; --gold-dim: #8a6e2a; --gold-pale: #e8d49a;
+  --ivory: #f2ede2; --ivory-mid: #d4ccb8; --ivory-dim: #9a9280;
+  --card-face: #faf8f3; --card-border: #c8bfa8;
+  --red-suit: #8b1c1c; --black-suit: #1a1a1a;
+  --heat-col: #9b2c2c; --control-col: #2a6b4a; --plan-col: #2a4a7a; --window-col: #7a5a2a;
+  --sel-cmd: #c9a84c; --sel-sup: #4a7a6a; --r: 4px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { background: var(--felt-deep); min-height: 100%; }
+body { font-family: 'DM Mono', monospace; color: var(--ivory); font-size: 13px; line-height: 1.5; overflow-x: hidden; }
+.screen { display: none; } .screen.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+/* LOBBY */
+#s-lobby { min-height:100vh; background:var(--felt-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; }
+#s-lobby.active { display:flex; }
+.lb-eyebrow { font-size:9px; letter-spacing:6px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:28px; }
+.lb-title { font-family:'Cormorant Garamond',serif; font-size:clamp(68px,20vw,104px); font-weight:700; color:var(--ivory); line-height:0.88; letter-spacing:-3px; margin-bottom:4px; }
+.lb-rule { width:40px; height:1px; background:var(--gold); margin:22px auto; }
+.lb-sub { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--ivory-mid); max-width:300px; line-height:1.65; margin-bottom:36px; }
+.lb-ops-lbl { font-size:7px; letter-spacing:4px; text-transform:uppercase; color:var(--gold-dim); margin-bottom:14px; }
+.lb-ops { width:100%; max-width:360px; }
+.lb-op { border:1px solid rgba(201,168,76,0.18); background:rgba(0,0,0,0.28); padding:16px 18px; margin-bottom:8px; cursor:pointer; text-align:left; transition:border-color 0.14s,background 0.14s; position:relative; }
+.lb-op:hover { border-color:var(--gold); background:rgba(201,168,76,0.04); }
+.lb-op-title { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:600; color:var(--ivory); margin-bottom:3px; }
+.lb-op-setting { font-size:9px; letter-spacing:1px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:6px; }
+.lb-op-target { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; color:var(--ivory-dim); margin-bottom:6px; }
+.lb-op-crew { font-size:9px; color:var(--ivory-dim); }
+.lb-op-diff { position:absolute; top:12px; right:14px; font-size:7px; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dim); }
+
+/* TITLE */
+#s-title { min-height:100vh; background:var(--felt-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; }
+#s-title.active { display:flex; }
+.t-eyebrow { font-size:9px; letter-spacing:6px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:28px; }
+.t-title { font-family:'Cormorant Garamond',serif; font-size:clamp(68px,20vw,104px); font-weight:700; color:var(--ivory); line-height:0.88; letter-spacing:-3px; margin-bottom:4px; }
+.t-rule { width:40px; height:1px; background:var(--gold); margin:22px auto; }
+.t-sub { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--ivory-mid); max-width:290px; line-height:1.65; margin-bottom:44px; }
+.t-crew { margin-bottom:44px; }
+.t-crew-row { font-size:11px; color:var(--ivory-dim); line-height:2.2; }
+.t-crew-row strong { color:var(--ivory-mid); font-weight:500; }
+.t-back { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); background:none; border:none; font-family:'DM Mono',monospace; cursor:pointer; margin-bottom:20px; padding:4px 0; }
+.t-back:hover { color:var(--gold); }
+
+/* BUTTONS */
+.btn { display:inline-block; border:1px solid var(--gold); color:var(--gold); background:transparent; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:4px; text-transform:uppercase; padding:13px 30px; cursor:pointer; transition:background 0.15s,color 0.15s; }
+.btn:hover,.btn:active { background:var(--gold); color:var(--felt-deep); }
+.btn:disabled { opacity:0.3; cursor:default; }
+.btn:disabled:hover { background:transparent; color:var(--gold); }
+.btn-sm { font-size:9px; letter-spacing:3px; padding:10px 22px; }
+.btn-ghost { border-color:rgba(242,237,226,0.2); color:var(--ivory-dim); }
+.btn-ghost:hover { background:rgba(242,237,226,0.06); color:var(--ivory-mid); }
+
+/* PLAN */
+#s-plan { background:var(--felt-deep); padding-bottom:60px; }
+.plan-hd { padding:40px 20px 24px; border-bottom:1px solid rgba(201,168,76,0.12); margin-bottom:24px; }
+.plan-phase { font-size:8px; letter-spacing:5px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:10px; }
+.plan-title { font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:600; color:var(--ivory); margin-bottom:8px; }
+.plan-brief { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--ivory-dim); line-height:1.65; }
+.plan-grp { padding:0 20px; margin-bottom:22px; }
+.plan-grp-lbl { font-size:8px; letter-spacing:4px; color:var(--gold); text-transform:uppercase; padding-bottom:8px; border-bottom:1px solid rgba(201,168,76,0.1); margin-bottom:10px; }
+.popt { border:1px solid rgba(242,237,226,0.1); background:rgba(0,0,0,0.28); padding:13px 14px; margin-bottom:7px; cursor:pointer; position:relative; transition:border-color 0.14s,background 0.14s; }
+.popt:hover { border-color:rgba(201,168,76,0.3); background:rgba(0,0,0,0.4); }
+.popt.sel { border-color:var(--gold); background:rgba(201,168,76,0.05); }
+.popt.sel::after { content:'◆'; position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--gold); font-size:8px; }
+.popt-name { font-size:12px; font-weight:500; color:var(--ivory); letter-spacing:0.5px; margin-bottom:3px; }
+.popt-desc { font-size:10px; color:var(--ivory-dim); line-height:1.4; }
+.plan-foot { padding:20px 20px 0; text-align:center; }
+.plan-warn { font-size:10px; color:#e05555; margin-bottom:12px; min-height:16px; }
+
+/* HUD */
+.hud { position:sticky; top:0; z-index:50; background:var(--felt-deep); border-bottom:1px solid rgba(201,168,76,0.1); padding:10px 16px 8px; }
+.hud-r1 { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+.hud-title { font-family:'Cormorant Garamond',serif; font-size:15px; font-weight:600; color:var(--gold); letter-spacing:1px; }
+.hud-act { font-size:8px; letter-spacing:3px; color:var(--ivory-dim); text-transform:uppercase; }
+.hud-meters { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:5px; margin-bottom:5px; }
+.m-lbl { font-size:7px; letter-spacing:2px; text-transform:uppercase; color:var(--ivory-dim); margin-bottom:2px; }
+.m-track { height:2px; background:rgba(255,255,255,0.07); }
+.m-fill { height:100%; transition:width 0.4s ease; }
+.m-fill.plan { background:var(--plan-col); } .m-fill.heat { background:var(--heat-col); }
+.m-fill.ctrl { background:var(--control-col); } .m-fill.window { background:var(--window-col); }
+.m-fill.window.urgent { background:#c05a1a; animation:pulse 1.2s ease infinite; }
+.m-num { font-size:8px; color:var(--ivory-dim); margin-top:2px; }
+.hud-target { text-align:center; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--ivory-dim); padding-top:2px; }
+.hud-target.secured { color:var(--gold); } .hud-target.transferred { color:#5ab87a; } .hud-target.lost { color:var(--heat-col); }
+.hud-help { font-size:7px; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dim); background:none; border:1px solid rgba(201,168,76,0.15); font-family:'DM Mono',monospace; padding:3px 8px; cursor:pointer; transition:border-color 0.14s,color 0.14s; }
+.hud-help:hover { border-color:rgba(201,168,76,0.4); color:var(--gold); }
+
+/* SCENE */
+#s-game { background:var(--felt-deep); }
+.scene-wrap { padding:16px 18px 0; animation:fadeUp 0.3s ease; }
+.scene-meta { display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+.scene-num { font-size:8px; letter-spacing:3px; color:var(--gold-dim); text-transform:uppercase; }
+.cat-badge { font-size:7px; letter-spacing:3px; text-transform:uppercase; padding:3px 8px; background:rgba(201,168,76,0.12); color:var(--gold-dim); border:1px solid rgba(201,168,76,0.2); }
+.cat-badge.complication { background:rgba(155,44,44,0.12); color:#c07070; border-color:rgba(155,44,44,0.25); }
+.scene-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--ivory); line-height:1.2; margin-bottom:12px; }
+.scene-body { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--ivory-mid); line-height:1.68; margin-bottom:12px; padding:12px 14px; background:rgba(0,0,0,0.2); border-left:2px solid rgba(201,168,76,0.2); }
+.comms { margin-bottom:12px; }
+.comm { font-size:11px; color:var(--ivory-mid); padding:5px 10px; background:rgba(0,0,0,0.22); border-left:1px solid rgba(201,168,76,0.18); margin-bottom:4px; }
+.comm-who { font-size:8px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; display:block; margin-bottom:1px; }
+.comm.betrayer-static { border-left-color:rgba(155,44,44,0.3); }
+.comm-who.betrayer { color:#b07070; }
+.plan-line { font-size:11px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.18); padding:9px 12px; margin-bottom:16px; }
+.pl-lbl { font-size:7px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); display:block; margin-bottom:3px; }
+.pl-text { color:var(--ivory-mid); font-style:italic; font-family:'Cormorant Garamond',serif; font-size:14px; }
+.plan-line.urgent { border-color:rgba(192,90,26,0.4); background:rgba(192,90,26,0.06); }
+.pl-text.urgent { color:#d4a880; }
+
+/* CARDS */
+.table-area { padding:0 18px 14px; } .hand-area { padding:0 10px 12px; }
+.area-lbl { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); margin-bottom:8px; }
+.table-cards { display:flex; gap:10px; justify-content:center; }
+.hand-cards { display:flex; gap:4px; justify-content:center; }
+.card { background:var(--card-face); border:1px solid var(--card-border); border-radius:var(--r); box-shadow:0 3px 10px rgba(0,0,0,0.45); display:flex; flex-direction:column; position:relative; user-select:none; }
+.card.red .cr,.card.red .cs,.card.red .cc { color:var(--red-suit); }
+.card.black .cr,.card.black .cs,.card.black .cc { color:var(--black-suit); }
+.ctop,.cbot { display:flex; flex-direction:column; align-items:center; line-height:1; padding:5px 5px 0; }
+.cbot { transform:rotate(180deg); margin-top:auto; padding-top:0; padding-bottom:5px; }
+.cr { font-family:'Cormorant Garamond',serif; font-weight:700; font-size:15px; line-height:1; }
+.cs { font-size:11px; line-height:1; }
+.cmid { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2px 4px; text-align:center; }
+.cc { font-size:22px; line-height:1; }
+.clabel { font-size:7px; font-family:'DM Mono',monospace; letter-spacing:0.3px; text-transform:uppercase; color:#555; text-align:center; border-top:1px solid rgba(0,0,0,0.08); padding:3px 3px 0; margin-top:2px; line-height:1.25; }
+.tc { width:96px; min-height:136px; }
+.tc .cr { font-size:17px; } .tc .cc { font-size:28px; } .tc .clabel { font-size:8px; }
+.hc { width:calc(20% - 4px); min-height:116px; cursor:pointer; transition:transform 0.14s,box-shadow 0.14s,border-color 0.14s; }
+.hc:hover { transform:translateY(-5px); box-shadow:0 8px 18px rgba(0,0,0,0.5); }
+.hc .cr { font-size:13px; } .hc .cs { font-size:10px; } .hc .cc { font-size:18px; } .hc .clabel { font-size:6.5px; }
+.hc.cmd-sel { border-color:var(--sel-cmd); box-shadow:0 0 0 2px var(--sel-cmd),0 8px 18px rgba(0,0,0,0.5); transform:translateY(-9px); }
+.hc.sup-sel { border-color:var(--sel-sup); box-shadow:0 0 0 2px var(--sel-sup),0 6px 14px rgba(0,0,0,0.5); transform:translateY(-5px); }
+.hc.cmd-locked { position:relative; }
+.hc.cmd-locked::after { content:attr(data-lock-reason); position:absolute; bottom:4px; left:0; right:0; text-align:center; font-size:6px; letter-spacing:2px; text-transform:uppercase; font-family:'DM Mono',monospace; pointer-events:none; padding:0 2px; }
+.phase-command .hc.cmd-locked { cursor:not-allowed; filter:saturate(0.15) brightness(0.7); }
+.phase-command .hc.cmd-locked:hover { transform:none !important; box-shadow:0 3px 10px rgba(0,0,0,0.45) !important; }
+.phase-support .hc.cmd-locked { filter:saturate(0.3) brightness(0.8); cursor:pointer; }
+.phase-support .hc.cmd-locked:hover { transform:translateY(-4px); }
+.hc.cmd-locked.lock-heat::after { color:#c07070; } .hc.cmd-locked.lock-plan::after { color:#7090c0; }
+.hc.cmd-locked.lock-ctrl::after { color:#70a080; } .hc.cmd-locked.lock-win::after { color:#c09050; }
+.hc.cmd-locked.lock-heat { box-shadow:inset 0 0 0 1px rgba(155,44,44,0.3); }
+.hc.cmd-locked.lock-plan { box-shadow:inset 0 0 0 1px rgba(42,74,122,0.3); }
+.hc.cmd-locked.lock-ctrl { box-shadow:inset 0 0 0 1px rgba(42,107,74,0.3); }
+.hc.cmd-locked.lock-win { box-shadow:inset 0 0 0 1px rgba(122,90,42,0.3); }
+.hc.locked { cursor:default; } .hc.locked:hover { transform:none; box-shadow:0 3px 10px rgba(0,0,0,0.45); }
+.hc.cmd-sel.locked { transform:translateY(-9px); }
+.poker-beat { font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; color:var(--gold-dim); border-top:1px solid rgba(201,168,76,0.12); margin-top:10px; padding-top:8px; line-height:1.55; }
+
+/* SELECTION */
+.sel-area { padding:0 18px 14px; }
+.sel-phase { font-size:9px; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; padding:6px 10px; text-align:center; }
+.sel-phase.p-cmd { background:rgba(201,168,76,0.07); color:var(--gold); border:1px solid rgba(201,168,76,0.18); }
+.sel-phase.p-sup { background:rgba(74,122,106,0.07); color:#7abf9e; border:1px solid rgba(74,122,106,0.18); }
+.sel-phase.p-done { background:rgba(0,0,0,0.18); color:var(--ivory-dim); border:1px solid rgba(242,237,226,0.07); }
+.slots { display:grid; grid-template-columns:1fr 1px 1fr 1fr; gap:0; margin-bottom:10px; align-items:stretch; }
+.slot-div { background:rgba(242,237,226,0.08); }
+.slot { min-height:82px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8px 6px; border:1px dashed rgba(242,237,226,0.1); }
+.slot.cmd-slot { border-color:rgba(201,168,76,0.22); background:rgba(201,168,76,0.02); }
+.slot.sup-slot { border-color:rgba(74,122,106,0.18); background:rgba(74,122,106,0.02); }
+.slot.filled { border-style:solid; }
+.slot.cmd-slot.filled { border-color:var(--gold); } .slot.sup-slot.filled { border-color:var(--sel-sup); }
+.slot-hdr { font-size:7px; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.cmd-slot .slot-hdr { color:var(--gold-dim); } .sup-slot .slot-hdr { color:#4a7a6a; }
+.slot-empty { font-size:12px; color:rgba(242,237,226,0.15); }
+.mini-card { display:flex; flex-direction:column; align-items:center; gap:2px; }
+.mc-rank { font-family:'Cormorant Garamond',serif; font-weight:700; font-size:18px; line-height:1; }
+.mc-lbl { font-size:7px; letter-spacing:0.5px; text-transform:uppercase; color:#555; line-height:1.2; text-align:center; max-width:60px; }
+.mc-rank.red { color:var(--red-suit); } .mc-rank.black { color:var(--black-suit); }
+.action-row { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.hint { font-size:10px; color:var(--ivory-dim); text-align:center; }
+
+/* RESULT */
+.result-panel { margin:0 18px 14px; background:rgba(0,0,0,0.32); border:1px solid rgba(201,168,76,0.18); padding:16px; display:none; animation:fadeUp 0.3s ease; }
+.result-panel.show { display:block; }
+.r-badges { display:flex; gap:7px; margin-bottom:12px; flex-wrap:wrap; }
+.rbadge { font-size:8px; letter-spacing:2px; text-transform:uppercase; padding:3px 8px; border:1px solid; }
+.rbadge.tactic { border-color:var(--gold); color:var(--gold); }
+.rbadge.poker { border-color:var(--sel-sup); color:#7abf9e; }
+.rbadge.plan-ok { border-color:rgba(42,74,122,0.8); color:#7aa0e0; }
+.rbadge.plan-vio { border-color:rgba(155,44,44,0.8); color:#e07a7a; }
+.rbadge.window-cost { border-color:rgba(122,90,42,0.8); color:#c9a84c; }
+.r-narr { font-family:'Cormorant Garamond',serif; font-size:15px; color:var(--ivory-mid); line-height:1.68; font-style:italic; margin-bottom:12px; }
+.r-deltas { display:flex; gap:8px; flex-wrap:wrap; font-size:9px; }
+.rdelta { display:flex; gap:3px; align-items:center; }
+.rdelta-lbl { color:var(--ivory-dim); }
+.rdelta-val { font-weight:500; }
+.rdelta-val.pos { color:#5ab87a; } .rdelta-val.neg { color:#e07a7a; } .rdelta-val.neu { color:var(--ivory-dim); }
+.ctg-reveal { background:rgba(201,168,76,0.05); border:1px solid var(--gold); padding:14px; margin-bottom:12px; display:none; animation:fadeUp 0.5s ease 0.4s both; }
+.ctg-reveal.show { display:block; }
+.ctg-head { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+.ctg-body { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--ivory-mid); line-height:1.65; }
+.betrayal-reveal { background:rgba(155,44,44,0.06); border:1px solid rgba(155,44,44,0.4); padding:14px; margin-bottom:12px; display:none; animation:fadeUp 0.5s ease 0.6s both; }
+.betrayal-reveal.show { display:block; }
+.betrayal-head { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#c07070; margin-bottom:8px; }
+.betrayal-body { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:#c8a8a8; line-height:1.65; }
+.next-row { text-align:center; padding:4px 18px 14px; display:none; }
+
+/* LOG */
+.log-area { padding:0 18px 20px; }
+.log-toggle { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); background:none; border:none; cursor:pointer; font-family:'DM Mono',monospace; padding:4px 0; }
+.log-entries { display:none; margin-top:8px; max-height:180px; overflow-y:auto; }
+.log-entries.open { display:block; }
+.log-entry { font-size:10px; color:var(--ivory-dim); padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.04); line-height:1.4; }
+.le-scene { font-size:8px; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dim); display:block; }
+.divider { width:100%; height:1px; background:rgba(242,237,226,0.06); margin:4px 0 12px; }
+
+/* END */
+#s-end { background:var(--felt-deep); padding-bottom:60px; }
+.end-hd { text-align:center; padding:48px 20px 24px; }
+.end-phase { font-size:8px; letter-spacing:5px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:16px; }
+.end-verdict { font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:700; margin-bottom:4px; line-height:1.1; }
+.end-verdict.success { color:var(--gold); } .end-verdict.partial { color:var(--ivory-mid); } .end-verdict.failure { color:var(--heat-col); }
+.end-sub { font-size:11px; color:var(--ivory-dim); letter-spacing:2px; text-transform:uppercase; }
+.end-rule { width:40px; height:1px; background:var(--gold); margin:20px auto; }
+.end-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 18px 24px; }
+.stat-box { border:1px solid rgba(201,168,76,0.13); padding:14px; text-align:center; }
+.stat-lbl { font-size:7px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); margin-bottom:6px; }
+.stat-val { font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--ivory); }
+.end-beats { padding:0 18px 24px; }
+.beats-lbl { font-size:8px; letter-spacing:4px; text-transform:uppercase; color:var(--gold-dim); padding-bottom:8px; border-bottom:1px solid rgba(201,168,76,0.1); margin-bottom:14px; }
+.end-beat { font-family:'Cormorant Garamond',serif; font-size:14px; font-style:italic; color:var(--ivory-mid); line-height:1.65; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.end-recap { margin:0 18px 28px; background:rgba(0,0,0,0.2); border-left:2px solid rgba(201,168,76,0.22); padding:12px 14px; font-size:11px; color:var(--ivory-dim); line-height:1.7; }
+.end-debrief { margin:0 18px 20px; }
+.debrief-lbl { font-size:8px; letter-spacing:4px; text-transform:uppercase; color:var(--gold-dim); padding-bottom:8px; border-bottom:1px solid rgba(201,168,76,0.1); margin-bottom:12px; }
+.debrief-line { font-family:'Cormorant Garamond',serif; font-size:14px; font-style:italic; color:var(--ivory-mid); line-height:1.65; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.debrief-line.rook-line { color:#c8a8a8; border-left:2px solid rgba(155,44,44,0.4); padding-left:10px; margin:4px 0; }
+.debrief-line.grab-line { color:var(--ivory-mid); border-left:2px solid rgba(201,168,76,0.2); padding-left:10px; margin:4px 0; }
+.end-foot { text-align:center; padding:0 18px; }
+
+/* HELP */
+.help-overlay { display:none; position:fixed; inset:0; z-index:200; background:rgba(8,18,8,0.92); overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.help-overlay.open { display:block; animation:fadeIn 0.2s ease; }
+.help-inner { max-width:480px; margin:0 auto; padding:32px 20px 60px; }
+.help-hd { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:28px; border-bottom:1px solid rgba(201,168,76,0.12); padding-bottom:16px; }
+.help-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--ivory); }
+.help-close { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); background:none; border:1px solid rgba(201,168,76,0.2); font-family:'DM Mono',monospace; padding:6px 12px; cursor:pointer; transition:border-color 0.14s,color 0.14s; }
+.help-close:hover { border-color:var(--gold); color:var(--gold); }
+.help-section { margin-bottom:28px; }
+.help-section-lbl { font-size:7px; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid rgba(201,168,76,0.1); }
+.help-entry { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.04); align-items:baseline; }
+.help-entry:last-child { border-bottom:none; }
+.help-cmd { font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--gold-pale); min-width:100px; flex-shrink:0; padding-top:1px; font-weight:500; }
+.help-desc { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--ivory-dim); line-height:1.5; }
+.help-meter { padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.help-meter:last-child { border-bottom:none; }
+.help-meter-hd { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.help-meter-name { font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:500; }
+.help-meter-name.plan { color:#7aa0e0; } .help-meter-name.heat { color:#e07a7a; } .help-meter-name.ctrl { color:#7abf9e; } .help-meter-name.win { color:#c9a84c; }
+.help-meter-pip { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.help-meter-pip.plan { background:var(--plan-col); } .help-meter-pip.heat { background:var(--heat-col); } .help-meter-pip.ctrl { background:var(--control-col); } .help-meter-pip.win { background:var(--window-col); }
+.help-meter-desc { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--ivory-dim); line-height:1.55; }
+.help-lock-entry { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.04); align-items:baseline; }
+.help-lock-entry:last-child { border-bottom:none; }
+.help-lock-word { font-size:9px; letter-spacing:2px; text-transform:uppercase; min-width:80px; flex-shrink:0; font-weight:500; padding-top:1px; }
+.help-lock-word.heat { color:#c07070; } .help-lock-word.plan { color:#7090c0; } .help-lock-word.ctrl { color:#70a080; } .help-lock-word.win { color:#c09050; }
+.help-lock-desc { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--ivory-dim); line-height:1.5; }
+</style>
+</head>
+<body>
+
+<div id="s-lobby" class="screen active">
+  <div class="lb-eyebrow">Available Operations</div>
+  <div class="lb-title">THE<br>HEIST</div>
+  <div class="lb-rule"></div>
+  <div class="lb-sub">Choose your operation. Study the brief. Trust your crew.</div>
+  <div class="lb-ops-lbl">Active Files</div>
+  <div class="lb-ops" id="lb-ops"></div>
+</div>
+
+<div id="s-title" class="screen">
+  <button class="t-back" onclick="G.backToLobby()">&#8592; Operations</button>
+  <div class="t-eyebrow" id="t-eyebrow"></div>
+  <div class="t-title" id="t-title"></div>
+  <div class="t-rule"></div>
+  <div class="t-sub" id="t-sub"></div>
+  <div class="t-crew" id="t-crew"></div>
+  <button class="btn" onclick="G.show('plan')">Begin Planning</button>
+</div>
+
+<div id="s-plan" class="screen">
+  <div class="plan-hd">
+    <div class="plan-phase" id="plan-phase"></div>
+    <div class="plan-title" id="plan-title"></div>
+    <div class="plan-brief" id="plan-brief"></div>
+  </div>
+  <div id="plan-categories"></div>
+  <div class="plan-foot" id="plan-foot">
+    <div class="plan-warn" id="plan-warn"></div>
+    <button class="btn" onclick="G.commitPlan()">Commit to the Plan</button>
+  </div>
+</div>
+
+<div id="s-game" class="screen">
+  <div class="hud">
+    <div class="hud-r1">
+      <div class="hud-title" id="hud-title">THE HEIST</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="hud-act" id="hud-act">Act I</div>
+        <button class="hud-help" onclick="G.toggleHelp()">? Help</button>
+      </div>
+    </div>
+    <div class="hud-meters">
+      <div class="m-item"><div class="m-lbl">Plan</div><div class="m-track"><div class="m-fill plan" id="m-plan" style="width:100%"></div></div><div class="m-num" id="mv-plan">100</div></div>
+      <div class="m-item"><div class="m-lbl">Heat</div><div class="m-track"><div class="m-fill heat" id="m-heat" style="width:0%"></div></div><div class="m-num" id="mv-heat">0</div></div>
+      <div class="m-item"><div class="m-lbl">Control</div><div class="m-track"><div class="m-fill ctrl" id="m-ctrl" style="width:100%"></div></div><div class="m-num" id="mv-ctrl">100</div></div>
+      <div class="m-item"><div class="m-lbl">Window</div><div class="m-track"><div class="m-fill window" id="m-win" style="width:100%"></div></div><div class="m-num" id="mv-win">100</div></div>
+    </div>
+    <div class="hud-target" id="hud-target">&#9670; Target: Not Secured</div>
+  </div>
+  <div id="game-body"></div>
+</div>
+
+<div id="s-end" class="screen">
+  <div class="end-hd">
+    <div class="end-phase">Operation Complete</div>
+    <div class="end-verdict" id="end-verdict"></div>
+    <div class="end-sub" id="end-sub"></div>
+  </div>
+  <div class="end-rule"></div>
+  <div class="end-stats" id="end-stats"></div>
+  <div class="end-beats"><div class="beats-lbl">Key Moments</div><div id="end-beats-list"></div></div>
+  <div class="end-recap" id="end-recap"></div>
+  <div class="end-debrief" id="end-debrief"></div>
+  <div class="end-foot">
+    <button class="btn" onclick="G.restart()" style="margin-right:12px;">Run It Again</button>
+    <button class="btn btn-ghost" onclick="G.backToLobby()">All Operations</button>
+  </div>
+</div>
+
+<div class="help-overlay" id="help-overlay">
+  <div class="help-inner">
+    <div class="help-hd">
+      <div class="help-title">Field Reference</div>
+      <button class="help-close" onclick="G.toggleHelp()">Close</button>
+    </div>
+    <div class="help-section">
+      <div class="help-section-lbl">Command Cards</div>
+      <div class="help-entry"><span class="help-cmd">Bluff</span><span class="help-desc">Construct a false identity or story on the spot. High risk, high payoff. Fails badly under scrutiny.</span></div>
+      <div class="help-entry"><span class="help-cmd">Sell the Pause</span><span class="help-desc">Use silence and stillness as a social tool. Let the other person fill the gap.</span></div>
+      <div class="help-entry"><span class="help-cmd">Commit</span><span class="help-desc">Own the room through authority and presence. You belong here. Act like it until they believe it.</span></div>
+      <div class="help-entry"><span class="help-cmd">Stall</span><span class="help-desc">Buy time without drawing attention. Useful when the plan needs a moment to catch up with reality.</span></div>
+      <div class="help-entry"><span class="help-cmd">Charm</span><span class="help-desc">Disarm with warmth. Works on people, not systems.</span></div>
+      <div class="help-entry"><span class="help-cmd">Slip Past</span><span class="help-desc">Move through a space without engaging. Invisibility by category.</span></div>
+      <div class="help-entry"><span class="help-cmd">Press Forward</span><span class="help-desc">Move decisively regardless of obstacles. Costs more in exposure but doesn't give the environment time to close around you.</span></div>
+      <div class="help-entry"><span class="help-cmd">Hold Nerve</span><span class="help-desc">Do nothing visible under pressure. The hardest command to play. The right one more often than it seems.</span></div>
+      <div class="help-entry"><span class="help-cmd">Rook's Route</span><span class="help-desc">Trust the infrastructure map. Requires control and confidence in the plan.</span></div>
+      <div class="help-entry"><span class="help-cmd">Call Timing</span><span class="help-desc">Execute on the comms count. Precision over instinct. Requires a steady operation and a plan still intact.</span></div>
+      <div class="help-entry"><span class="help-cmd">Trust the Plan</span><span class="help-desc">Follow the original brief without deviation. Only meaningful when the plan is still coherent.</span></div>
+      <div class="help-entry"><span class="help-cmd">Signal</span><span class="help-desc">Communicate to the crew without speaking. Requires the plan intact and the crew in position.</span></div>
+      <div class="help-entry"><span class="help-cmd">Pass the Case</span><span class="help-desc">Transfer the target off your body immediately. You become clean. Someone else carries the risk.</span></div>
+      <div class="help-entry"><span class="help-cmd">Switch</span><span class="help-desc">Exchange the real item for a prepared substitute. Requires control and precision.</span></div>
+      <div class="help-entry"><span class="help-cmd">Take the Heat</span><span class="help-desc">Absorb suspicion deliberately to protect the operation or the crew.</span></div>
+      <div class="help-entry"><span class="help-cmd">Fold Cover</span><span class="help-desc">Abandon a layer of your disguise in a controlled way. Loses something to save something more important.</span></div>
+      <div class="help-entry"><span class="help-cmd">False Panic</span><span class="help-desc">Create the appearance of an innocent emergency. Useless or worse once heat is high.</span></div>
+      <div class="help-entry"><span class="help-cmd">Improvise</span><span class="help-desc">Abandon the plan and find another way. Never the preferred option.</span></div>
+      <div class="help-entry"><span class="help-cmd">Burn Disguise</span><span class="help-desc">Fully commit your cover identity in a way that cannot be walked back. Last resort.</span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-lbl">The Meters</div>
+      <div class="help-meter"><div class="help-meter-hd"><div class="help-meter-pip plan"></div><div class="help-meter-name plan">Plan</div></div><div class="help-meter-desc">How intact the original brief is. As it drops, commands that require a functioning plan lock out. Below 30, the operation is largely improvised.</div></div>
+      <div class="help-meter"><div class="help-meter-hd"><div class="help-meter-pip heat"></div><div class="help-meter-name heat">Heat</div></div><div class="help-meter-desc">How much attention the operation has attracted. As it rises, social commands lock out. Above 70 you are already a person of interest. Hard to bring back down.</div></div>
+      <div class="help-meter"><div class="help-meter-hd"><div class="help-meter-pip ctrl"></div><div class="help-meter-name ctrl">Control</div></div><div class="help-meter-desc">Crew operational composure. As it drops, commands requiring precision and steadiness lock out.</div></div>
+      <div class="help-meter"><div class="help-meter-hd"><div class="help-meter-pip win"></div><div class="help-meter-name win">Window</div></div><div class="help-meter-desc">Time remaining before the critical threshold. Every scene costs window. Below 35 it pulses. Cannot be recovered.</div></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-lbl">Locked Cards</div>
+      <div class="help-meter-desc" style="margin-bottom:12px;">When a card shows a word in the corner and goes gray, it cannot be played as your command. It can still be used as a support card.</div>
+      <div class="help-lock-entry"><span class="help-lock-word heat">Exposed</span><span class="help-lock-desc">Heat too high. The room is watching.</span></div>
+      <div class="help-lock-entry"><span class="help-lock-word plan">Off-Plan</span><span class="help-lock-desc">Plan degraded too far. This command only means something when there's still a plan.</span></div>
+      <div class="help-lock-entry"><span class="help-lock-word ctrl">Rattled</span><span class="help-lock-desc">Control too low. Requires composure the evening has taken from you.</span></div>
+      <div class="help-lock-entry"><span class="help-lock-word win">No Time</span><span class="help-lock-desc">Window closing. This command costs time you can no longer spend.</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="content-scripts"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// ENGINE CONSTANTS
+// ═══════════════════════════════════════════════════════════
+
+const SUITS = ['♠','♥','♦','♣'];
+const RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const RV    = {2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,J:11,Q:12,K:13,A:14};
+const RED   = new Set(['♥','♦']);
+
+const ALL_CMDS = [
+  'Bluff','Sell the Pause','Commit','Stall','Charm',
+  'Slip Past','Press Forward','Hold Nerve',"Rook's Route",
+  'Call Timing','Trust the Plan','Signal',
+  'Pass the Case','Switch','Take the Heat',
+  'Fold Cover','False Panic','Improvise','Burn Disguise'
+];
+
+const CAT_PREFS = {
+  social:   { good:['Bluff','Sell the Pause','Commit','Charm','Stall'],        bad:['Press Forward','Signal','Improvise','Burn Disguise'] },
+  movement: { good:['Slip Past','Press Forward','Hold Nerve',"Rook's Route"],  bad:['Stall','Bluff','False Panic','Burn Disguise'] },
+  timing:   { good:['Call Timing','Stall','Trust the Plan','Signal'],          bad:['Improvise','Press Forward','Take the Heat'] },
+  transfer: { good:['Pass the Case','Switch','Take the Heat','Signal'],        bad:['Commit','Press Forward','Bluff'] },
+  heat:     { good:['Hold Nerve','Stall','False Panic','Fold Cover','Charm'],  bad:['Press Forward','Burn Disguise','Improvise'] },
+  reversal: { good:['Hold Nerve','Signal','Trust the Plan'],                   bad:['Improvise','Press Forward','False Panic','Burn Disguise'] },
+};
+
+// Lock rules: purely mechanical thresholds, no content-specific naming
+const LOCK_RULES = {
+  'Trust the Plan': [{meter:'plan', dir:'below', base:50, label:'Off-Plan', css:'lock-plan'}],
+  'Call Timing':    [{meter:'plan', dir:'below', base:50, label:'Off-Plan', css:'lock-plan'},
+                     {meter:'ctrl', dir:'below', base:40, label:'Rattled',  css:'lock-ctrl'}],
+  'Signal':         [{meter:'plan', dir:'below', base:30, label:'Off-Plan', css:'lock-plan'}],
+  'Hold Nerve':     [{meter:'plan', dir:'below', base:30, label:'Off-Plan', css:'lock-plan'},
+                     {meter:'ctrl', dir:'below', base:20, label:'Rattled',  css:'lock-ctrl'}],
+  'Charm':          [{meter:'heat', dir:'above', base:50, label:'Exposed',  css:'lock-heat'}],
+  'Sell the Pause': [{meter:'heat', dir:'above', base:50, label:'Exposed',  css:'lock-heat'}],
+  'Bluff':          [{meter:'heat', dir:'above', base:70, label:'Exposed',  css:'lock-heat'}],
+  'Commit':         [{meter:'heat', dir:'above', base:70, label:'Exposed',  css:'lock-heat'}],
+  "Rook's Route":   [{meter:'ctrl', dir:'below', base:40, label:'Rattled',  css:'lock-ctrl'}],
+  'Pass the Case':  [{meter:'ctrl', dir:'below', base:40, label:'Rattled',  css:'lock-ctrl'}],
+  'Switch':         [{meter:'ctrl', dir:'below', base:20, label:'Rattled',  css:'lock-ctrl'}],
+  'Stall':          [{meter:'win',  dir:'below', base:30, label:'No Time',  css:'lock-win'}],
+  'Fold Cover':     [{meter:'win',  dir:'below', base:15, label:'No Time',  css:'lock-win'}],
+  'False Panic':    [{meter:'win',  dir:'below', base:15, label:'No Time',  css:'lock-win'}],
+};
+
+// ═══════════════════════════════════════════════════════════
+// LOCK SYSTEM
+// Fast Snatch heat offset is a balance mechanic, lives in engine.
+// ═══════════════════════════════════════════════════════════
+
+function getLockedReason(cmd, state, sceneIdx, grab) {
+  const rules = LOCK_RULES[cmd];
+  if(!rules) return null;
+  const heatOffset = (grab === 'Fast Snatch' && sceneIdx >= 5) ? -15 : 0;
+  for(const r of rules) {
+    const val = r.meter==='plan' ? state.planVal
+              : r.meter==='heat' ? state.heat
+              : r.meter==='ctrl' ? state.ctrl : state.window;
+    const threshold = r.meter === 'heat' ? r.base + heatOffset : r.base;
+    if(r.dir === 'above' ? val > threshold : val < threshold) return { label: r.label, css: r.css };
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════
+// POKER ENGINE
+// ═══════════════════════════════════════════════════════════
+
+function rkv(r) { return RV[r] || parseInt(r); }
+
+function evalHand(cards5) {
+  const rv     = cards5.map(c => rkv(c.r)).sort((a,b) => a-b);
+  const suits  = cards5.map(c => c.s);
+  const rc     = {};
+  rv.forEach(r => { rc[r] = (rc[r]||0) + 1; });
+  const counts = Object.values(rc).sort((a,b) => b-a);
+  const flush  = suits.every(s => s === suits[0]);
+  const uniq   = [...new Set(rv)];
+  const straight = uniq.length === 5 && rv[4] - rv[0] === 4;
+  const aceLow   = JSON.stringify(rv) === '[2,3,4,5,14]';
+  const isSt     = straight || aceLow;
+  if(flush && isSt)                    return { name:'Straight Flush',  tier:8 };
+  if(counts[0] === 4)                  return { name:'Four of a Kind',  tier:7 };
+  if(counts[0]===3 && counts[1]===2)   return { name:'Full House',      tier:6 };
+  if(flush)                            return { name:'Flush',           tier:5 };
+  if(isSt)                             return { name:'Straight',        tier:4 };
+  if(counts[0] === 3)                  return { name:'Three of a Kind', tier:3 };
+  if(counts[0]===2 && counts[1]===2)   return { name:'Two Pair',        tier:2 };
+  if(counts[0] === 2)                  return { name:'Pair',            tier:1 };
+  return                                      { name:'High Card',        tier:0 };
+}
+
+function pokerMod(tier) {
+  if(tier >= 7) return 2;
+  if(tier >= 3) return 1;
+  return tier >= 1 ? 0 : -1;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DECK
+// ═══════════════════════════════════════════════════════════
+
+function buildDeck() {
+  const d = [];
+  for(const s of SUITS) for(const r of RANKS) d.push({r, s});
+  return d;
+}
+function shuffle(a) {
+  const b = [...a];
+  for(let i = b.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [b[i],b[j]] = [b[j],b[i]];
+  }
+  return b;
+}
+function deal(n) { return shuffle(buildDeck()).slice(0, n); }
+function assignCmds(cards) {
+  const cmds = shuffle([...ALL_CMDS]);
+  return cards.map((c,i) => ({...c, cmd: cmds[i % cmds.length]}));
+}
+
+// ═══════════════════════════════════════════════════════════
+// RUN STRUCTURE — ENGINE OWNS THIS
+// Content supplies scene pools via actScenes[].
+// Engine decides how to sequence them.
+// ═══════════════════════════════════════════════════════════
+
+function buildRunStructure(C, plan, compSlots) {
+  const keys = C.actScenes.map((act, i) => {
+    const slot  = act.actSlot !== undefined ? act.actSlot : i;
+    const isComp = compSlots.includes(slot);
+    return isComp ? act.comp(plan) : act.clean(plan);
+  });
+  // Reversal always scene 6; null = exit routing, resolved at runtime
+  return [...keys, 'reversal', null];
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESOLUTION PIPELINE
+// Three composed steps: quality → deltas → apply
+// ═══════════════════════════════════════════════════════════
+
+// Step 1: tactical quality
+function resolveQuality(def, cmd, pokerTier) {
+  const prefs = CAT_PREFS[def.cat] || {good:[], bad:[]};
+  let tf = 0;
+  if(prefs.good.includes(cmd))     tf = prefs.good.indexOf(cmd) < 2 ? 2 : 1;
+  else if(prefs.bad.includes(cmd)) tf = prefs.bad.indexOf(cmd)  < 2 ? -2 : -1;
+  const pb = def.planBonus ? def.planBonus(cmd) : 0;
+  return Math.max(-2, Math.min(4, tf + pb + pokerMod(pokerTier)));
+}
+
+// Step 2: assemble delta object through pipeline
+function assembleDeltaObject(def, quality, sceneIdx, plan, state, C, betrayalFires) {
+  // Base scene deltas
+  let d = { ...def.deltas(quality, plan, def.key) };
+
+  // Content-provided run modifier hook (grab style, etc.)
+  if(C.applyRunModifiers) {
+    const patch = C.applyRunModifiers(d, sceneIdx, plan, state);
+    for(const k of ['heat','ctrl','plan','window']) {
+      if(patch[k] !== undefined) d[k] = (d[k]||0) + patch[k];
+    }
+  }
+
+  // Betrayal delta modifier
+  if(betrayalFires && C.betrayal && C.betrayal.deltaModifier) {
+    const dm = C.betrayal.deltaModifier;
+    for(const k of ['heat','ctrl','window']) {
+      if(dm[k]) d[k] = (d[k]||0) + dm[k];
+    }
+  }
+
+  return d;
+}
+
+// Step 3: apply deltas to state, return previous target
+function applyDeltaObject(S, d) {
+  const prev = S.target;
+  if(d.plan   !== undefined) S.planVal = clamp(S.planVal + d.plan,   0, 100);
+  if(d.heat   !== undefined) S.heat    = clamp(S.heat    + d.heat,   0, 100);
+  if(d.ctrl   !== undefined) S.ctrl    = clamp(S.ctrl    + d.ctrl,   0, 100);
+  if(d.window !== undefined) S.window  = clamp(S.window  + d.window, 0, 100);
+  if(d.target) S.target = d.target;
+  return prev;
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+
+function mk(tag, cls='') { const el=document.createElement(tag||'div'); if(cls) el.className=cls; return el; }
+function mkDiv() { const d=document.createElement('div'); d.className='divider'; return d; }
+function clamp(v,a,b) { return Math.max(a, Math.min(b, v)); }
+
+// ═══════════════════════════════════════════════════════════
+// LOBBY
+// ═══════════════════════════════════════════════════════════
+
+function buildLobby() {
+  const container = document.getElementById('lb-ops');
+  container.innerHTML = '';
+  (window.HEIST_INDEX || []).forEach(op => {
+    const el = mk('div','lb-op');
+    el.innerHTML = `
+      <div class="lb-op-diff">${op.difficulty||''}</div>
+      <div class="lb-op-title">${op.title}</div>
+      <div class="lb-op-setting">${op.setting}</div>
+      <div class="lb-op-target">${op.target} &mdash; ${op.targetDesc}</div>
+      <div class="lb-op-crew">${op.crew}</div>`;
+    el.addEventListener('click', () => loadHeist(op));
+    container.appendChild(el);
+  });
+}
+
+function loadHeist(opManifest) {
+  if(document.querySelector(`script[data-heist="${opManifest.id}"]`)) { initHeist(); return; }
+  const s = document.createElement('script');
+  s.src = opManifest.file;
+  s.dataset.heist = opManifest.id;
+  s.onload  = () => initHeist();
+  s.onerror = () => alert(`Could not load operation: ${opManifest.title}`);
+  document.getElementById('content-scripts').appendChild(s);
+}
+
+function initHeist() {
+  const C = window.HEIST_CONTENT;
+  if(!C) return;
+
+  document.getElementById('t-eyebrow').textContent  = C.eyebrow;
+  document.getElementById('t-title').textContent    = C.title;
+  document.getElementById('t-sub').textContent      = C.subtitle;
+  document.getElementById('t-crew').innerHTML       = `<div class="t-crew-row">${C.crew.map(m=>`<strong>${m.name}</strong> &mdash; ${m.role}`).join(' &nbsp;&middot;&nbsp; ')}</div>`;
+  document.getElementById('hud-title').textContent  = C.title;
+  document.getElementById('plan-phase').textContent = C.planPhase;
+  document.getElementById('plan-title').textContent = C.planTitle;
+  document.getElementById('plan-brief').textContent = C.planBrief;
+
+  const catContainer = document.getElementById('plan-categories');
+  catContainer.innerHTML = '';
+  C.planCategories.forEach(cat => {
+    const grp = mk('div','plan-grp');
+    const lbl = mk('div','plan-grp-lbl'); lbl.textContent = cat.label;
+    grp.appendChild(lbl);
+    cat.options.forEach(opt => {
+      const el = mk('div','popt');
+      el.dataset.cat = cat.key; el.dataset.val = opt.value;
+      el.innerHTML = `<div class="popt-name">${opt.name}</div><div class="popt-desc">${opt.desc}</div>`;
+      el.addEventListener('click', () => G.planSel(el));
+      grp.appendChild(el);
+    });
+    catContainer.appendChild(grp);
+  });
+
+  G.init();
+  showScreen('title');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════════════════════
+// GAME CONTROLLER
+// ═══════════════════════════════════════════════════════════
+
+const G = (() => {
+  let S = {};
+
+  function init() {
+    const C = window.HEIST_CONTENT;
+    S = {
+      plan:{}, planVal:100, heat:0, ctrl:100, window:100,
+      target: C ? C.target.initial : 'not_secured',
+      sceneIdx:0, runStructure:[], compSlots:[],
+      betrayalActive:false, betrayalRevealed:false, contingencyFired:false,
+      _windowAtVault:undefined,
+      log:[], beats:[],
+      tableCards:[], handCards:[], cmdCard:null, supCards:[],
+      selPhase:'command', scene:null,
+    };
+  }
+
+  function show(id) { showScreen(id); }
+
+  function backToLobby() {
+    document.getElementById('help-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    showScreen('lobby');
+  }
+
+  // ── PLAN ──────────────────────────────────────────────────
+
+  function planSel(el) {
+    document.querySelectorAll(`.popt[data-cat="${el.dataset.cat}"]`).forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+    S.plan[el.dataset.cat] = el.dataset.val;
+  }
+
+  function commitPlan() {
+    const C = window.HEIST_CONTENT;
+    const w = document.getElementById('plan-warn');
+    if(C.planCategories.some(c => !S.plan[c.key])) { w.textContent='Select one option from each category.'; return; }
+    w.textContent = '';
+    document.querySelectorAll('.popt').forEach(o => { o.style.pointerEvents='none'; });
+    document.getElementById('plan-foot').style.display = 'none';
+
+    const shuffled = shuffle([0,1,2,3]);
+    S.compSlots = [shuffled[0], shuffled[1]].sort((a,b)=>a-b);
+
+    const bt = C.betrayal;
+    S.betrayalActive = bt ? Math.random() < bt.probability : false;
+
+    // Engine owns run structure; content supplies scene pools
+    S.runStructure = buildRunStructure(C, S.plan, S.compSlots);
+
+    show('game');
+    renderScene();
+  }
+
+  // ── SCENE RENDER ──────────────────────────────────────────
+
+  function currentSceneKey() {
+    const key = S.runStructure[S.sceneIdx];
+    if(key === null) return S.heat >= 45 ? 'exit_high_heat' : 'exit_clean';
+    return key;
+  }
+
+  function renderScene() {
+    const C   = window.HEIST_CONTENT;
+    const key = currentSceneKey();
+    const def = C.scenes[key];
+    if(!def) { showEnd(); return; }
+    S.scene = {...def, key};
+
+    const winUrgent = S.window < 35;
+    updateHUD(def.act);
+
+    const tCards = deal(2).map((c,i) => ({...c, cmd:def.table[i].cmd}));
+    const hCards = assignCmds(deal(5));
+    S.tableCards = tCards; S.handCards = hCards;
+    S.cmdCard = null; S.supCards = []; S.selPhase = 'command';
+
+    const gb = document.getElementById('game-body');
+    gb.innerHTML = '';
+
+    const sw = mk('div','scene-wrap');
+
+    // Scene meta
+    const meta = mk('div','scene-meta');
+    const numEl = mk('div','scene-num'); numEl.textContent = `Scene ${S.sceneIdx+1} of ${S.runStructure.length}`;
+    const catEl = mk('div', `cat-badge${def.isComplication?' complication':''}`);
+    catEl.textContent = def.cat.toUpperCase() + (def.isComplication?' — COMPLICATION':'');
+    meta.append(numEl, catEl); sw.appendChild(meta);
+
+    const titleEl = mk('div','scene-title'); titleEl.textContent = def.title; sw.appendChild(titleEl);
+    const bodyEl  = mk('div','scene-body');  bodyEl.textContent  = def.body;  sw.appendChild(bodyEl);
+
+    // Comms — always a function, never an array
+    const bt = C.betrayal;
+    const commsData = def.comms(S.plan);
+    const commsEl = mk('div','comms');
+    commsData.forEach(c => {
+      const isBetrayer = bt && c.who === bt.betrayerName;
+      const showStatic = S.betrayalActive && !S.betrayalRevealed && bt && bt.silentScenes.includes(S.sceneIdx) && isBetrayer;
+      const div = mk('div','comm'+(showStatic?' betrayer-static':''));
+      const who = mk('span','comm-who'+(isBetrayer?' betrayer':''));
+      who.textContent = c.who; div.appendChild(who);
+      div.appendChild(document.createTextNode(showStatic ? '[static] ...' : c.line));
+      commsEl.appendChild(div);
+    });
+    sw.appendChild(commsEl);
+
+    // Plan line — label and urgency suffix from content
+    const pl    = mk('div','plan-line'+(winUrgent?' urgent':''));
+    const plLbl = mk('span','pl-lbl'); plLbl.textContent = C.planLineLabel || 'Plan';
+    const plTxt = mk('span','pl-text'+(winUrgent?' urgent':''));
+    let planText = def.planLine(S.plan, def.isComplication);
+    if(winUrgent && !def.isReversal) planText += ' ' + (C.windowUrgencyLine || 'The window is closing.');
+    plTxt.textContent = planText;
+    pl.append(plLbl, plTxt); sw.appendChild(pl);
+    gb.appendChild(sw);
+
+    // Table cards
+    const ta = mk('div','table-area');
+    const taLbl = mk('div','area-lbl'); taLbl.textContent = 'The Table';
+    ta.appendChild(taLbl);
+    const tcRow = mk('div','table-cards');
+    tCards.forEach(c => tcRow.appendChild(makeCard(c,'tc')));
+    ta.appendChild(tcRow); gb.appendChild(ta); gb.appendChild(mkDiv());
+
+    // Hand cards
+    const ha = mk('div','hand-area');
+    const haLbl = mk('div','area-lbl'); haLbl.style.textAlign='center'; haLbl.style.marginBottom='8px'; haLbl.textContent='Your Hand';
+    ha.appendChild(haLbl);
+    const hcRow = mk('div','hand-cards phase-command');
+    hCards.forEach((c,i) => {
+      const lockInfo = getLockedReason(c.cmd, S, S.sceneIdx, S.plan.grab);
+      const el = makeCard(c,'hc'); el.dataset.idx = i;
+      if(lockInfo) { el.classList.add('cmd-locked', lockInfo.css); el.dataset.lockReason = lockInfo.label; }
+      el.addEventListener('click', () => onCardClick(i));
+      hcRow.appendChild(el);
+    });
+    ha.appendChild(hcRow); gb.appendChild(ha);
+
+    const selA = mk('div','sel-area'); selA.id='sel-area'; gb.appendChild(selA);
+    const rp   = mk('div','result-panel'); rp.id='result-panel'; gb.appendChild(rp);
+    const nr   = mk('div','next-row'); nr.id='next-row';
+    const nb   = mk('button','btn btn-sm'); nb.textContent='Next Scene'; nb.onclick=nextScene;
+    nr.appendChild(nb); gb.appendChild(nr);
+
+    renderLog(gb);
+    renderSel();
+  }
+
+  // ── CARD SELECTION UI ─────────────────────────────────────
+
+  function renderSel() {
+    const selA = document.getElementById('sel-area');
+    if(!selA) return;
+    selA.innerHTML = '';
+
+    const hcRow = document.querySelector('.hand-cards');
+    if(hcRow) {
+      hcRow.classList.remove('phase-command','phase-support','phase-done');
+      hcRow.classList.add('phase-'+(S.selPhase==='command'?'command':S.selPhase==='support'?'support':'done'));
+    }
+
+    const ph   = S.selPhase;
+    const phEl = mk('div',`sel-phase p-${ph==='command'?'cmd':ph==='support'?'sup':'done'}`);
+    phEl.textContent = ph==='command' ? 'Step 1 — Choose your Command'
+                     : ph==='support' ? `Step 2 — Choose ${2-S.supCards.length} Support Card${2-S.supCards.length===1?'':'s'}`
+                     : 'Hand Ready';
+    selA.appendChild(phEl);
+
+    const slots = mk('div','slots');
+    const cs = mk('div','slot cmd-slot'+(S.cmdCard?' filled':''));
+    const csh = mk('div','slot-hdr'); csh.textContent='What are you doing?';
+    cs.appendChild(csh);
+    if(S.cmdCard) cs.appendChild(miniCard(S.cmdCard));
+    else { const e=mk('div','slot-empty'); e.textContent='—'; cs.appendChild(e); }
+    slots.appendChild(cs); slots.appendChild(mk('div','slot-div'));
+    [0,1].forEach(i => {
+      const ss = mk('div','slot sup-slot'+(S.supCards[i]?' filled':''));
+      const sh = mk('div','slot-hdr'); sh.textContent=i===0?'Build the hand':'+ Support';
+      ss.appendChild(sh);
+      if(S.supCards[i]) ss.appendChild(miniCard(S.supCards[i]));
+      else { const e=mk('div','slot-empty'); e.textContent='—'; ss.appendChild(e); }
+      slots.appendChild(ss);
+    });
+    selA.appendChild(slots);
+
+    const ar = mk('div','action-row');
+    const ht = mk('div','hint');
+    ht.textContent = ph==='command' ? 'Tap a card — this is your operative command.'
+                   : ph==='support' ? `Tap ${2-S.supCards.length} card${2-S.supCards.length===1?'':'s'} to build the hand.`
+                   : 'Command locked. Hand ready.';
+    ar.appendChild(ht);
+    if(ph==='done') { const pb=mk('button','btn btn-sm'); pb.textContent='Play the Hand'; pb.onclick=playHand; ar.appendChild(pb); }
+    selA.appendChild(ar);
+  }
+
+  function onCardClick(idx) {
+    if(S.selPhase==='done') return;
+    const card = S.handCards[idx];
+    const els  = document.querySelectorAll('.hc');
+    if(S.selPhase==='command') {
+      if(els[idx].classList.contains('cmd-locked')) return;
+      if(S.cmdCard) { const pi=S.handCards.indexOf(S.cmdCard); if(pi>=0) els[pi].classList.remove('cmd-sel','locked'); }
+      if(S.cmdCard===card) { S.cmdCard=null; }
+      else { S.cmdCard=card; els[idx].classList.add('cmd-sel','locked'); S.selPhase='support'; }
+    } else if(S.selPhase==='support') {
+      if(card===S.cmdCard) return;
+      const si=S.supCards.indexOf(card);
+      if(si>=0) { S.supCards.splice(si,1); els[idx].classList.remove('sup-sel'); }
+      else {
+        if(S.supCards.length>=2) return;
+        S.supCards.push(card); els[idx].classList.add('sup-sel');
+        if(S.supCards.length===2) S.selPhase='done';
+      }
+    }
+    renderSel();
+  }
+
+  // ── PLAY HAND ─────────────────────────────────────────────
+
+  function playHand() {
+    if(!S.cmdCard || S.supCards.length < 2) return;
+    const C   = window.HEIST_CONTENT;
+    const def = S.scene;
+    const cmd = S.cmdCard.cmd;
+
+    // Evaluate poker
+    const pr      = evalHand([S.cmdCard, ...S.supCards, ...S.tableCards]);
+    const quality = resolveQuality(def, cmd, pr.tier);
+
+    // Betrayal check
+    const bt = C.betrayal;
+    const betrayalFires = S.betrayalActive && bt &&
+      bt.fireSceneKeys.includes(def.key) &&
+      S.sceneIdx === bt.fireScene && !S.betrayalRevealed;
+
+    // Contingency check — content owns this entirely
+    let contingencyResult = null;
+    if(def.isReversal && C.checkContingencyReveal) {
+      contingencyResult = C.checkContingencyReveal(S.plan, cmd, quality);
+    }
+
+    // Assemble and apply deltas
+    // Contingency fires: use scene's contingencyDeltas override
+    const d = (contingencyResult && def.contingencyDeltas)
+      ? { ...def.contingencyDeltas }
+      : assembleDeltaObject(def, quality, S.sceneIdx, S.plan, S, C, betrayalFires);
+
+    const prevTarget = applyDeltaObject(S, d);
+
+    // targetChange hook (vault scenes set 'secured')
+    if(!contingencyResult && def.targetChange) {
+      const tc = def.targetChange(quality);
+      if(tc) S.target = tc;
+    }
+
+    // Window pressure for poor early play
+    if(S.heat > 40 && S.ctrl < 55 && S.sceneIdx < 4) S.window = clamp(S.window-8,0,100);
+
+    // Track vault window for ending analysis
+    if(S.sceneIdx===3 || S.sceneIdx===4) S._windowAtVault = S.window;
+    S.plan._windowAtExit = S.window;
+
+    if(contingencyResult) S.contingencyFired = true;
+    if(betrayalFires)     S.betrayalRevealed = true;
+
+    updateHUD();
+
+    // Narrative
+    const narr = def.narrative(quality, cmd, S.plan, S.betrayalActive);
+
+    // Poker beat — content owns all character-specific language
+    const beatLine = C.pokerBeatLine
+      ? C.pokerBeatLine(pr.tier, def.cat, def.isReversal||false, !!(def.isVault), quality, S)
+      : '';
+
+    // Render result
+    renderResult(def, cmd, quality, pr, d, prevTarget, narr, beatLine, contingencyResult, betrayalFires, bt);
+
+    // Record beat for ending
+    S.beats.push({
+      title:def.title, text:narr, quality, cmd,
+      isComplication: def.isComplication||false,
+      pokerTier:pr.tier, pokerName:pr.name,
+      isReversal: def.isReversal||false,
+    });
+    S.log.push({ scene:def.title, text:narr.substring(0,90)+'…' });
+
+    document.getElementById('next-row').style.display = 'block';
+    document.querySelectorAll('.hc').forEach(c => c.style.pointerEvents='none');
+  }
+
+  function renderResult(def, cmd, quality, pr, d, prevTarget, narr, beatLine, ctgResult, betrayalFires, bt) {
+    const prefs = CAT_PREFS[def.cat]||{good:[],bad:[]};
+    let tf=0;
+    if(prefs.good.includes(cmd))     tf = prefs.good.indexOf(cmd)<2?2:1;
+    else if(prefs.bad.includes(cmd)) tf = prefs.bad.indexOf(cmd)<2?-2:-1;
+    const tLbls = {2:'Precise read',1:'Acceptable',0:'Neutral','-1':'Poor fit','-2':'Wrong call'};
+    const pb    = def.planBonus ? def.planBonus(cmd) : 0;
+
+    const ctgHtml = ctgResult ? `
+      <div class="ctg-reveal show">
+        <div class="ctg-head">${ctgResult.head}</div>
+        <div class="ctg-body">${ctgResult.body.replace(/\n/g,'<br><br>')}</div>
+      </div>` : '';
+
+    const betrayalHtml = betrayalFires && bt ? `
+      <div class="betrayal-reveal show">
+        <div class="betrayal-head">${bt.betrayerName} — Signal Lost</div>
+        <div class="betrayal-body">${bt.revealBody.replace(/\n/g,'<br><br>')}</div>
+      </div>` : '';
+
+    const badges = [
+      `<span class="rbadge tactic">${tLbls[tf]||'Neutral'} — ${cmd}</span>`,
+      `<span class="rbadge poker">${pr.name}</span>`,
+      pb ? `<span class="rbadge ${pb>0?'plan-ok':'plan-vio'}">${pb>0?'Plan honored':'Plan violated'}</span>` : '',
+      (d.window||0)<-10 ? `<span class="rbadge window-cost">Window −${Math.abs(d.window)}</span>` : '',
+    ].filter(Boolean).join('');
+
+    const rp = document.getElementById('result-panel');
+    rp.className = 'result-panel show';
+    rp.innerHTML = `
+      <div class="r-badges">${badges}</div>
+      ${ctgHtml}${betrayalHtml}
+      <div class="r-narr">${narr.replace(/\n/g,'<br><br>')}</div>
+      ${beatLine ? `<div class="poker-beat">${beatLine}</div>` : ''}
+      <div class="r-deltas">${buildDeltaDisplay(d, prevTarget)}</div>`;
+  }
+
+  function buildDeltaDisplay(d, prevTarget) {
+    const parts = [];
+    const show = (lbl, val) => {
+      if(!val) return;
+      parts.push(`<div class="rdelta"><span class="rdelta-lbl">${lbl}</span><span class="rdelta-val ${val>0?'pos':'neg'}">${val>0?'+':''}${val}</span></div>`);
+    };
+    show('Plan',    d.plan);
+    show('Heat',   -(d.heat||0));
+    show('Control', d.ctrl);
+    show('Window',  d.window);
+    if(S.target !== prevTarget) {
+      const C = window.HEIST_CONTENT;
+      const label = C.target.displayStrings[S.target] || S.target;
+      parts.push(`<div class="rdelta"><span class="rdelta-lbl">Target</span><span class="rdelta-val pos">${label}</span></div>`);
+    }
+    return parts.join('');
+  }
+
+  // ── ADVANCE ───────────────────────────────────────────────
+
+  function nextScene() {
+    S.sceneIdx++;
+    if(S.sceneIdx >= S.runStructure.length) { showEnd(); return; }
+    renderScene();
+    window.scrollTo(0,0);
+  }
+
+  // ── HUD ───────────────────────────────────────────────────
+
+  function updateHUD(actLabel) {
+    const C = window.HEIST_CONTENT;
+    if(actLabel) document.getElementById('hud-act').textContent = actLabel;
+    document.getElementById('m-plan').style.width = S.planVal+'%';
+    document.getElementById('m-heat').style.width = S.heat+'%';
+    document.getElementById('m-ctrl').style.width = S.ctrl+'%';
+    document.getElementById('m-win' ).style.width = S.window+'%';
+    document.getElementById('mv-plan').textContent = S.planVal;
+    document.getElementById('mv-heat').textContent = S.heat;
+    document.getElementById('mv-ctrl').textContent = S.ctrl;
+    document.getElementById('mv-win' ).textContent = S.window;
+    S.window<35 ? document.getElementById('m-win').classList.add('urgent') : document.getElementById('m-win').classList.remove('urgent');
+
+    const te = document.getElementById('hud-target');
+    const tCfg = C ? C.target : null;
+    te.textContent = '◆ ' + (tCfg ? (tCfg.displayStrings[S.target]||S.target) : S.target);
+    const hudCls   = tCfg ? (tCfg.hudClasses[S.target]||'') : '';
+    te.className   = 'hud-target' + (hudCls ? ' '+hudCls : '');
+  }
+
+  // ── END SCREEN ────────────────────────────────────────────
+
+  function showEnd() {
+    const C = window.HEIST_CONTENT;
+    const successKeys = C.target.successKeys || [];
+    const success     = successKeys.includes(S.target);
+    const clean       = S.heat < 35;
+    const controlled  = S.ctrl >= 50;
+    const planIntact  = S.planVal >= 60;
+    const windowOk    = S.window >= 20;
+    const windowNearMiss = S._windowAtVault !== undefined && S._windowAtVault < 20;
+
+    const compBeats   = S.beats.filter(b => b.isComplication);
+    const managedWell = compBeats.filter(b => b.quality >= 2).length;
+    const reversalBeat   = S.beats.find(b => b.isReversal);
+    const exceptionalHands = S.beats.filter(b => b.pokerTier >= 5);
+    const exceptionalAtReversal = S.beats.find(b => b.isReversal && b.pokerTier >= 5);
+
+    const endState = {
+      success, clean, controlled, planIntact, windowOk, windowNearMiss,
+      contingencyFired: S.contingencyFired,
+      grab: S.plan.grab,
+      betrayalActive: S.betrayalActive,
+      betrayalRevealed: S.betrayalRevealed,
+      compCount: compBeats.length, managedWell,
+      reversalBeat,
+      reversalGood:    reversalBeat && reversalBeat.quality >= 1,
+      reversalPerfect: reversalBeat && reversalBeat.quality >= 3,
+      exceptionalHands, exceptionalAtReversal,
+    };
+
+    let verdictObj = C.endings.verdicts.find(v => v.check(endState));
+    if(!verdictObj) verdictObj = { verdict:'Burned', sub:'', cls:'failure' };
+
+    document.getElementById('end-verdict').textContent = verdictObj.verdict;
+    document.getElementById('end-verdict').className   = 'end-verdict ' + verdictObj.cls;
+    document.getElementById('end-sub').textContent     = verdictObj.sub;
+
+    document.getElementById('end-stats').innerHTML = `
+      <div class="stat-box"><div class="stat-lbl">Plan Adherence</div><div class="stat-val">${S.planVal}%</div></div>
+      <div class="stat-box"><div class="stat-lbl">Heat Generated</div><div class="stat-val">${S.heat}</div></div>
+      <div class="stat-box"><div class="stat-lbl">Control Held</div><div class="stat-val">${S.ctrl}%</div></div>
+      <div class="stat-box"><div class="stat-lbl">Window Remaining</div><div class="stat-val">${S.window}%</div></div>`;
+
+    const keyBeats = S.beats.filter(b => b.isComplication||b.quality>=3||b.quality<=-1||b.pokerTier>=6||b.isReversal).slice(0,4);
+    document.getElementById('end-beats-list').innerHTML = keyBeats.length
+      ? keyBeats.map(b=>`<div class="end-beat">${b.text.replace(/\n/g,'<br>')}</div>`).join('')
+      : '<div class="end-beat" style="color:var(--ivory-dim)">A clean operation leaves few memorable moments. That is the definition of a clean operation.</div>';
+
+    const debriefLines = C.endings.debriefLines.map(fn => fn(endState)).filter(Boolean);
+    const planSummary  = C.planCategories.map(cat=>`${cat.label}: ${S.plan[cat.key]}`).join(' · ');
+    document.getElementById('end-recap').textContent = planSummary;
+    document.getElementById('end-debrief').innerHTML = `
+      <div class="debrief-lbl">Debrief</div>
+      ${debriefLines.map((l,i)=>`<div class="${C.endings.debriefLineClass(l,i,endState)}">${l}</div>`).join('')}`;
+
+    show('end');
+  }
+
+  // ── HELP & RESTART ────────────────────────────────────────
+
+  function toggleHelp() {
+    const el = document.getElementById('help-overlay');
+    el.classList.toggle('open');
+    document.body.style.overflow = el.classList.contains('open') ? 'hidden' : '';
+  }
+
+  function restart() {
+    init();
+    document.querySelectorAll('.popt').forEach(o => { o.classList.remove('sel'); o.style.pointerEvents=''; });
+    document.getElementById('plan-foot').style.display = '';
+    document.getElementById('help-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    show('title');
+  }
+
+  // ── CARD RENDERING ────────────────────────────────────────
+
+  function makeCard(card, cls) {
+    const isRed = RED.has(card.s);
+    const d = mk('div',`card ${isRed?'red':'black'} ${cls}`);
+    d.innerHTML = `
+      <div class="ctop"><div class="cr">${card.r}</div><div class="cs">${card.s}</div></div>
+      <div class="cmid"><div class="cc">${card.s}</div><div class="clabel">${card.cmd||''}</div></div>
+      <div class="cbot"><div class="cr">${card.r}</div><div class="cs">${card.s}</div></div>`;
+    return d;
+  }
+
+  function miniCard(card) {
+    const isRed = RED.has(card.s);
+    const d = mk('div','mini-card');
+    d.innerHTML = `<div class="mc-rank ${isRed?'red':'black'}">${card.r}${card.s}</div><div class="mc-lbl">${card.cmd}</div>`;
+    return d;
+  }
+
+  function renderLog(gb) {
+    const la = mk('div','log-area');
+    la.innerHTML = `
+      <button class="log-toggle" onclick="this.nextElementSibling.classList.toggle('open')">▸ Mission Log</button>
+      <div class="log-entries">
+        ${S.log.map(e=>`<div class="log-entry"><span class="le-scene">${e.scene}</span>${e.text}</div>`).join('')}
+      </div>`;
+    gb.appendChild(la);
+  }
+
+  init();
+  return { init, show, backToLobby, planSel, commitPlan, nextScene, restart, toggleHelp };
+})();
+
+// ═══════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════
+
+(function boot() {
+  const s = document.createElement('script');
+  s.src = 'index.js';
+  s.onload  = () => buildLobby();
+  s.onerror = () => {
+    if(window.HEIST_CONTENT) { initHeist(); }
+    else { document.getElementById('lb-ops').innerHTML='<div style="color:var(--ivory-dim);font-size:11px;text-align:center;padding:20px;">No operations found. Place index.js in the same folder.</div>'; }
+  };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>
