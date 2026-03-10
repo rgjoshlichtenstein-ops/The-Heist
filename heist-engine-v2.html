@@ -26,7 +26,7 @@ body { font-family: 'DM Mono', monospace; color: var(--ivory); font-size: 13px; 
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 
 /* LOBBY */
-#s-lobby { min-height:100vh; background:var(–felt-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; }
+#s-lobby { min-height:100vh; background:var(–felt-deep); flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; }
 #s-lobby.active { display:flex; }
 .lb-eyebrow { font-size:9px; letter-spacing:6px; color:var(–gold-dim); text-transform:uppercase; margin-bottom:28px; }
 .lb-title { font-family:‘Cormorant Garamond’,serif; font-size:clamp(68px,20vw,104px); font-weight:700; color:var(–ivory); line-height:0.88; letter-spacing:-3px; margin-bottom:4px; }
@@ -43,7 +43,7 @@ body { font-family: 'DM Mono', monospace; color: var(--ivory); font-size: 13px; 
 .lb-op-diff { position:absolute; top:12px; right:14px; font-size:7px; letter-spacing:2px; text-transform:uppercase; color:var(–gold-dim); }
 
 /* TITLE */
-#s-title { min-height:100vh; background:var(–felt-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; }
+#s-title { min-height:100vh; background:var(–felt-deep); flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; }
 #s-title.active { display:flex; }
 .t-eyebrow { font-size:9px; letter-spacing:6px; color:var(–gold-dim); text-transform:uppercase; margin-bottom:28px; }
 .t-title { font-family:‘Cormorant Garamond’,serif; font-size:clamp(68px,20vw,104px); font-weight:700; color:var(–ivory); line-height:0.88; letter-spacing:-3px; margin-bottom:4px; }
@@ -240,7 +240,7 @@ body { font-family: 'DM Mono', monospace; color: var(--ivory); font-size: 13px; 
 
 /* HELP */
 /* BURN ENDING */
-#s-burn { background:var(–felt-deep); min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; }
+#s-burn { background:var(–felt-deep); min-height:100vh; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; }
 #s-burn.active { display:flex; }
 .burn-eyebrow { font-size:9px; letter-spacing:6px; color:#9b2c2c; text-transform:uppercase; margin-bottom:32px; animation:fadeIn 1s ease; }
 .burn-comms { width:100%; max-width:360px; margin-bottom:48px; }
