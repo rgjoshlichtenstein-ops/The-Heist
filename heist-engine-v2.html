@@ -641,6 +641,9 @@ function buildLobby() {
 }
 
 function loadHeist(opManifest) {
+  // Content is loaded via static script tags -- just init directly
+  if(window.HEIST_CONTENT) { initHeist(); return; }
+  // Fallback: try dynamic load
   if(document.querySelector(`script[data-heist="${opManifest.id}"]`)) { initHeist(); return; }
   const s = document.createElement('script');
   s.src = opManifest.file;
@@ -1280,15 +1283,29 @@ window.G = (() => {
 // ═══════════════════════════════════════════════════════════
 
 (function boot() {
+  // If content already loaded via static script tag, go straight to lobby
+  if(window.HEIST_INDEX) { buildLobby(); return; }
+  // Otherwise try loading index.js dynamically
   const s = document.createElement('script');
   s.src = 'index.js';
   s.onload  = () => buildLobby();
   s.onerror = () => {
-    if(window.HEIST_CONTENT) { initHeist(); }
-    else { document.getElementById('lb-ops').innerHTML='<div style="color:var(--ivory-dim);font-size:11px;text-align:center;padding:20px;">No operations found. Place index.js in the same folder.</div>'; }
+    if(window.HEIST_CONTENT) { buildLobby(); }
+    else { document.getElementById('lb-ops').innerHTML='<div style="color:var(--ivory-dim);font-size:11px;text-align:center;padding:20px;">No operations found.</div>'; }
   };
   document.head.appendChild(s);
 })();
+</script>
+
+<!-- Content packages loaded as static scripts -- most reliable cross-browser -->
+
+<script src="index.js"></script>
+
+<script src="vandermeer-v2.js"></script>
+
+<script>
+  // Re-run lobby build after static scripts load, in case boot ran first
+  if(window.HEIST_INDEX) buildLobby();
 </script>
 
 </body>
