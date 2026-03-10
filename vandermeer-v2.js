@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-// CONTENT PACKAGE — THE VANDERMEER JOB
+// CONTENT PACKAGE -- THE VANDERMEER JOB
 // The Alderton Museum Gala · The Vandermeer Sapphire
 // ═══════════════════════════════════════════════════════════
 
@@ -10,7 +10,7 @@ window.HEIST_CONTENT = {
 id: ‘vandermeer’,
 title: ‘THE HEIST’,
 eyebrow: ‘Museum Gala · One Night · Four People’,
-subtitle: “The Vandermeer Sapphire. The Alderton Museum. The plan is good. Trust everyone until you can’t.”,
+subtitle: "The Vandermeer Sapphire. The Alderton Museum. The plan is good. Trust everyone until you can’t.",
 
 crew: [
 { name: ‘Vale’, role: ‘comms & timing’ },
@@ -43,9 +43,9 @@ lost:        ‘lost’,
 
 // ── PLAN LINE LABEL ──────────────────────────────────────
 // The label shown above the plan line in each scene.
-// Remove “Vale” here if another heist uses a different comms voice.
+// Remove "Vale" here if another heist uses a different comms voice.
 
-planLineLabel: ‘Vale — Plan’,
+planLineLabel: ‘Vale -- Plan’,
 
 // ── WINDOW URGENCY LINE ──────────────────────────────────
 // Appended to the plan line text when window < urgency threshold.
@@ -99,8 +99,8 @@ silentScenes: [2, 3, 4],
 fireScene: 4,
 // Scene keys that are eligible to fire the betrayal
 fireSceneKeys: [‘vault_timing_clean’,‘vault_timing_comp’,‘vault_transfer_clean’,‘vault_transfer_comp’],
-revealHead: ‘Rook — Signal Lost’,
-revealBody: “The alarm kill was called. The alarm is still live.\n\nRook comes back on comms forty seconds later. His voice is controlled. He says he’s sorry. He says he didn’t have a choice. He says the name of a person you don’t recognize and asks you to understand.\n\nYou don’t have time to understand. You move.”,
+revealHead: ‘Rook -- Signal Lost’,
+revealBody: "The alarm kill was called. The alarm is still live.\n\nRook comes back on comms forty seconds later. His voice is controlled. He says he’s sorry. He says he didn’t have a choice. He says the name of a person you don’t recognize and asks you to understand.\n\nYou don’t have time to understand. You move.",
 deltaModifier: { heat: 15, ctrl: -10, window: -15 },
 },
 
@@ -136,7 +136,7 @@ return patch;
 // ── CONTINGENCY REVEAL ───────────────────────────────────
 // Called by engine after resolution if scene is a reversal.
 // Returns { head, body } if contingency fires, or null.
-// This is where Inside Blue lives — not in the engine.
+// This is where Inside Blue lives -- not in the engine.
 
 checkContingencyReveal(plan, cmd, quality) {
 if(
@@ -145,8 +145,8 @@ plan.contingency === ‘Inside Blue’ &&
 quality >= 1
 ) {
 return {
-head: ‘Inside Blue — Contingency Active’,
-body: “The backup guard makes a gesture — one flat hand, palm down, pressed once. You’ve seen that signal before. Rook taught it to you three weeks ago in a parking structure in Brussels.\n\nThe apparent arrest becomes something else entirely.”,
+head: ‘Inside Blue -- Contingency Active’,
+body: "The backup guard makes a gesture -- one flat hand, palm down, pressed once. You’ve seen that signal before. Rook taught it to you three weeks ago in a parking structure in Brussels.\n\nThe apparent arrest becomes something else entirely.",
 };
 }
 return null;
@@ -163,14 +163,14 @@ const runClean = state.heat < 25 && state.ctrl > 70 && state.planVal > 70;
 
 ```
 if(tier >= 7) {
-  if(isReversal) return "The hand was extraordinary. The kind of luck that doesn't announce itself — it simply arrives, exactly when it has to.";
+  if(isReversal) return "The hand was extraordinary. The kind of luck that doesn't announce itself -- it simply arrives, exactly when it has to.";
   if(isVault)    return 'The cards came exactly right. Vale would say the plan earned it. You know better.';
   return "A hand like that only happens when you stop expecting it.";
 }
 if(tier >= 5) {
   if(isReversal && runBad) return 'The cards were better than the situation deserved. You used them.';
   if(isReversal)  return 'The hand held. So did you.';
-  if(isVault)     return "Everything aligned at once — the timing, the hand, the moment. It won't always.";
+  if(isVault)     return "Everything aligned at once -- the timing, the hand, the moment. It won't always.";
   return runClean ? 'The operation and the hand agreed with each other.' : 'The cards were kinder than the evening.';
 }
 if(tier >= 3) {
@@ -198,7 +198,7 @@ return '';
 // ── ENDING CONFIG ────────────────────────────────────────
 
 endings: {
-// Verdicts checked in order — first match wins.
+// Verdicts checked in order -- first match wins.
 // endState keys: success, clean, controlled, planIntact, windowOk,
 //   windowNearMiss, contingencyFired, betrayalActive, betrayalRevealed,
 //   grab, compCount, managedWell, reversalBeat, reversalGood,
@@ -221,7 +221,7 @@ cls: ‘success’,
 {
 id: ‘extracted_cost’,
 check: (s) => s.success && s.betrayalRevealed && s.controlled,
-verdict: ‘Extracted — At a Cost’,
+verdict: ‘Extracted -- At a Cost’,
 sub: ‘The stone moved. So did trust.’,
 cls: ‘partial’,
 },
@@ -250,7 +250,7 @@ cls: ‘partial’,
 id: ‘survived’,
 check: (s) => s.success,
 verdict: ‘Survived’,
-sub: “It worked. Not the way it was drawn up, but it worked.”,
+sub: "It worked. Not the way it was drawn up, but it worked.",
 cls: ‘partial’,
 },
 {
@@ -263,12 +263,12 @@ cls: ‘failure’,
 ],
 
 ```
-// Debrief line generators — each returns a string or null.
+// Debrief line generators -- each returns a string or null.
 debriefLines: [
   // Complication shape
   (s) => {
     if(s.compCount === 0) return 'The museum cooperated. No environmental complications materialized. A run like this one rewards preparation more than improvisation.';
-    if(s.compCount >= 2 && s.managedWell >= 2) return 'Two complications. Both managed. The operation absorbed pressure and kept moving — which is the difference between a plan and a wish.';
+    if(s.compCount >= 2 && s.managedWell >= 2) return 'Two complications. Both managed. The operation absorbed pressure and kept moving -- which is the difference between a plan and a wish.';
     if(s.compCount >= 1 && s.managedWell === 0) return 'The complications cost more than they should have. The operation adapted but spent resources it needed later.';
     return `${s.compCount === 1 ? 'One complication' : 'Two complications'}, handled at varying cost. The evening was not what was drawn up.`;
   },
@@ -280,26 +280,26 @@ debriefLines: [
       return 'The Fast Snatch left no room for complications. The stone was on you and the room eventually noticed.';
     }
     if(s.grab === 'Clean Swap') {
-      if(s.windowNearMiss) return "The Clean Swap bought time — but the window nearly expired before you were out. The replica was still in the case when the corridor behind you got complicated. You felt the discovery starting as you left.";
+      if(s.windowNearMiss) return "The Clean Swap bought time -- but the window nearly expired before you were out. The replica was still in the case when the corridor behind you got complicated. You felt the discovery starting as you left.";
       if(s.success) return 'The Clean Swap worked as designed. The museum will not know what it is missing until someone looks closely at what remains. You were well clear before that happened.';
       return 'The Clean Swap was undone before it could work. The replica was irrelevant once the window closed.';
     }
     if(s.grab === 'Hidden Transfer') {
-      if(s.success) return "The Hidden Transfer meant the stone was Nix's problem from the moment you left the vault. You walked out clean. That is a specific kind of trust — handing the whole operation to someone else and walking in the opposite direction.";
+      if(s.success) return "The Hidden Transfer meant the stone was Nix's problem from the moment you left the vault. You walked out clean. That is a specific kind of trust -- handing the whole operation to someone else and walking in the opposite direction.";
       return 'The Hidden Transfer distributed the risk but could not distribute the outcome. The stone did not make it.';
     }
     return null;
   },
   // Betrayal
   (s) => {
-    if(s.betrayalActive && s.betrayalRevealed) return "Rook was running the timing against you. Not the intelligence — the intelligence was accurate. But the pace was his, and the pace was wrong on purpose. The alarm that did not kill was the moment it became undeniable.";
+    if(s.betrayalActive && s.betrayalRevealed) return "Rook was running the timing against you. Not the intelligence -- the intelligence was accurate. But the pace was his, and the pace was wrong on purpose. The alarm that did not kill was the moment it became undeniable.";
     if(s.betrayalActive && !s.betrayalRevealed) return "Something in the window did not add up. The timing across Acts two and three was tighter than Rook's map should have allowed. You noticed it as a feeling. You did not know what to do with the feeling.";
     return null;
   },
   // Reversal
   (s) => {
     if(!s.reversalBeat) return null;
-    if(s.contingencyFired) return 'The contingency worked the way contingencies are supposed to — invisibly, until the moment it mattered entirely.';
+    if(s.contingencyFired) return 'The contingency worked the way contingencies are supposed to -- invisibly, until the moment it mattered entirely.';
     if(s.reversalPerfect) return 'The reversal was the hardest moment and you played it correctly. That does not happen by accident.';
     if(s.reversalGood) return 'The reversal was survivable. Not clean. Survivable. That distinction will matter going forward.';
     if(s.success) return 'The reversal nearly ended the operation. You got through it. The margin was not something you would want to replicate.';
@@ -355,13 +355,13 @@ burnOut: [
 },
 
 // ── RUN STRUCTURE ────────────────────────────────────────
-// Provides scene pool selection only — NOT run structure logic.
+// Provides scene pool selection only -- NOT run structure logic.
 // Engine calls buildRunStructure() using this map.
 // Format: { actIndex: { clean: ‘key’, comp: ‘key’ } }
 // Special keys ‘reversal’ and null (exit) are handled by the engine.
 
 actScenes: [
-// Act 0 — Entry (single scene, determined by plan.entry)
+// Act 0 -- Entry (single scene, determined by plan.entry)
 {
 clean: (plan) => {
 if(plan.entry === ‘Front Social’)        return ‘entry_social_clean’;
@@ -374,13 +374,13 @@ if(plan.entry === ‘Service Route’)       return ‘entry_service_comp’;
 return ‘entry_staff_comp’;
 },
 },
-// Act 1 — Approach (two scenes)
+// Act 1 -- Approach (two scenes)
 { clean: () => ‘approach_movement_clean’, comp: () => ‘approach_movement_comp’ },
 { clean: () => ‘approach_timing_clean’,   comp: () => ‘approach_timing_comp’   },
-// Act 2 — Vault (two scenes, share comp slot)
+// Act 2 -- Vault (two scenes, share comp slot)
 { clean: () => ‘vault_timing_clean’,      comp: () => ‘vault_timing_comp’,   actSlot: 2 },
 { clean: () => ‘vault_transfer_clean’,    comp: () => ‘vault_transfer_comp’, actSlot: 2 },
-// Act 3 — Crisis (one scene)
+// Act 3 -- Crisis (one scene)
 { clean: () => ‘crisis_heat_clean’,       comp: () => ‘crisis_heat_comp’ },
 ],
 
@@ -392,12 +392,12 @@ scenes: {
 // ── ACT 1: ENTRY ─────────────────────────────────────
 
 entry_social_clean: {
-  cat: 'social', act: 'Act I — Entry',
+  cat: 'social', act: 'Act I -- Entry',
   isComplication: false,
-  title: 'Front Entrance — Donor Registration',
+  title: 'Front Entrance -- Donor Registration',
   body: "The gala is in full effect. Two hundred guests, a string quartet, waitstaff moving with the particular efficiency of people being watched by their supervisors. The credential desk is staffed by two volunteers and one security officer. The line is short.",
   comms: () => [
-    { who: 'NIX',  line: "Collar up slightly. You're a late arrival — someone who almost didn't come. That's the energy. Not eager. Slightly inconvenienced." },
+    { who: 'NIX',  line: "Collar up slightly. You're a late arrival -- someone who almost didn't come. That's the energy. Not eager. Slightly inconvenienced." },
     { who: 'VALE', line: 'Credential scans clean. Move past the desk before the officer has a reason to look at your face.' },
   ],
   planLine: (p) => 'Plan says: donor credentials are solid. Walk through. Let them do the work.',
@@ -405,36 +405,36 @@ entry_social_clean: {
   table: [{ r:'Q', s:'♦', cmd:'Donor Floor' }, { r:'8', s:'♥', cmd:'Credential Check' }],
   narrative: (q, cmd) => {
     if(q >= 4) return "The credential scans. The officer nods. You move past the desk at the pace of someone who has been to enough of these that the novelty has worn off. Nix was right about the energy.";
-    if(q >= 2) return `You ${cmd.toLowerCase()} — the credential passes, the officer makes eye contact for one beat. You hold it without blinking. He looks at the next guest.`;
+    if(q >= 2) return `You ${cmd.toLowerCase()} -- the credential passes, the officer makes eye contact for one beat. You hold it without blinking. He looks at the next guest.`;
     return `The ${cmd.toLowerCase()} creates a small friction. The volunteer asks you to step aside briefly. Nix appears from somewhere, makes a remark about the canapés, and the moment dissolves.`;
   },
   deltas: (q) => ({ plan: q>=3?0:q>=1?-5:-15, heat: q>=3?5:q>=1?12:25, ctrl: q>=3?0:q>=1?0:-8, window: q>=3?-5:q>=1?-8:-14 }),
 },
 
 entry_social_comp: {
-  cat: 'social', act: 'Act I — Entry',
+  cat: 'social', act: 'Act I -- Entry',
   isComplication: true,
-  title: 'Front Entrance — The Board Member',
+  title: 'Front Entrance -- The Board Member',
   body: "The credential desk is normal. The problem is standing beside it: a museum board member, someone whose face is in the annual report, who apparently knows the donor whose credentials you're carrying. He has already seen you.",
   comms: () => [
-    { who: 'NIX',  line: "He's walking over. He thinks he knows you — or he thinks he should. Let him believe whichever version is easier." },
+    { who: 'NIX',  line: "He's walking over. He thinks he knows you -- or he thinks he should. Let him believe whichever version is easier." },
     { who: 'VALE', line: 'You have about fifteen seconds before he reaches you. Do not leave the desk before your credential clears.' },
   ],
   planLine: (p) => 'Plan says: donor credentials, front entrance, straight through.',
   planBonus: (cmd) => ['Charm','Sell the Pause','Commit','Bluff'].includes(cmd) ? 1 : ['Improvise','False Panic','Press Forward'].includes(cmd) ? -1 : 0,
   table: [{ r:'K', s:'♦', cmd:'Board Member' }, { r:'8', s:'♥', cmd:'Credential Clearing' }],
   narrative: (q, cmd) => {
-    if(q >= 4) return `You ${cmd.toLowerCase()} — become exactly the person he expects to see. He shakes your hand and says something about the last fundraiser. You agree. The credential clears. The conversation ends naturally.`;
-    if(q >= 2) return `You ${cmd.toLowerCase()}. He's warm but uncertain — he can't quite place you. You give him enough to satisfy the uncertainty and the credential clears while he's thinking about it.`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} -- become exactly the person he expects to see. He shakes your hand and says something about the last fundraiser. You agree. The credential clears. The conversation ends naturally.`;
+    if(q >= 2) return `You ${cmd.toLowerCase()}. He's warm but uncertain -- he can't quite place you. You give him enough to satisfy the uncertainty and the credential clears while he's thinking about it.`;
     return `The ${cmd.toLowerCase()} confirms his confusion. He asks a direct question you can't answer. Vale feeds something through the earpiece. You say it. He accepts it, but the credential desk officer is now watching.`;
   },
   deltas: (q) => ({ plan: q>=3?0:q>=1?-8:-20, heat: q>=3?10:q>=1?20:38, ctrl: q>=3?0:q>=1?-5:-15, window: q>=3?-6:q>=1?-12:-20 }),
 },
 
 entry_service_clean: {
-  cat: 'movement', act: 'Act I — Entry',
+  cat: 'movement', act: 'Act I -- Entry',
   isComplication: false,
-  title: 'Loading Bay — Service Entrance',
+  title: 'Loading Bay -- Service Entrance',
   body: "The service entrance is exactly where Rook said it would be. Badge reader on the right, camera covering the approach, a fourteen-second window between sweeps. The corridor beyond it runs straight to the back-of-house stairwell.",
   comms: () => [
     { who: 'ROOK', line: "Badge reads on first pass. Don't linger at the reader. Right wall, keep moving." },
@@ -445,16 +445,16 @@ entry_service_clean: {
   table: [{ r:'7', s:'♠', cmd:'Badge Reader' }, { r:'9', s:'♣', cmd:'Eight Minutes' }],
   narrative: (q, cmd) => {
     if(q >= 4) return "First touch. The badge reads clean. You take the right wall at exactly the pace of someone who has done this before. Rook was right about the camera.";
-    if(q >= 2) return `You ${cmd.toLowerCase()} — the reader takes two attempts. The corridor is clear. Six minutes left in the window.`;
+    if(q >= 2) return `You ${cmd.toLowerCase()} -- the reader takes two attempts. The corridor is clear. Six minutes left in the window.`;
     return `The ${cmd.toLowerCase()} stalls you at the reader. A kitchen porter appears at the far end of the corridor before you're through. He says nothing. You don't know why.`;
   },
   deltas: (q) => ({ plan: q>=3?0:q>=1?-5:-15, heat: q>=3?0:q>=1?8:20, ctrl: q>=3?5:q>=1?0:-12, window: q>=3?-5:q>=1?-8:-15 }),
 },
 
 entry_service_comp: {
-  cat: 'movement', act: 'Act I — Entry',
+  cat: 'movement', act: 'Act I -- Entry',
   isComplication: true,
-  title: 'Loading Bay — Someone Changed the Schedule',
+  title: 'Loading Bay -- Someone Changed the Schedule',
   body: "The service entrance is correct. The badge reader is correct. The corridor is not. A catering truck is backed into the bay forty minutes ahead of schedule, and two staff members are unloading it directly across your route. Rook's map is accurate. The map just doesn't account for this.",
   comms: () => [
     { who: 'ROOK', line: "They moved the delivery up. I don't know why. The corridor is passable but not clean. You'll need to move through them, not around them." },
@@ -464,7 +464,7 @@ entry_service_comp: {
   planBonus: (cmd) => ['Slip Past','Charm','Fold Cover','Hold Nerve'].includes(cmd) ? 1 : ['Stall','Improvise','Bluff'].includes(cmd) ? -1 : 0,
   table: [{ r:'5', s:'♠', cmd:'Route Blocked' }, { r:'9', s:'♣', cmd:'Four Minutes' }],
   narrative: (q, cmd) => {
-    if(q >= 4) return `You ${cmd.toLowerCase()} — through the catering staff at exactly the pace of someone who belongs here, carrying something, going somewhere. Neither of them looks up.`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} -- through the catering staff at exactly the pace of someone who belongs here, carrying something, going somewhere. Neither of them looks up.`;
     if(q >= 2) return `You ${cmd.toLowerCase()}. One of the staff members asks if you need a hand. You say no, keep moving. He watches you go. He doesn't follow.`;
     return `The ${cmd.toLowerCase()} creates confusion. One of the staff members blocks your path without meaning to. You route around him, losing a minute and entering the corridor from the wrong angle.`;
   },
@@ -472,29 +472,29 @@ entry_service_comp: {
 },
 
 entry_staff_clean: {
-  cat: 'social', act: 'Act I — Entry',
+  cat: 'social', act: 'Act I -- Entry',
   isComplication: false,
-  title: 'Staff Entrance — Clipboard and Tone',
+  title: 'Staff Entrance -- Clipboard and Tone',
   body: "The staff entrance runs alongside the catering corridor. A security officer with a scanner. Nix fitted the uniform this afternoon. The clipboard is real. The name on it is not.",
   comms: () => [
     { who: 'NIX',  line: "Collar straight. Clipboard forward. You're running a vendor compliance check. Move like you're already late for the next one." },
-    { who: 'VALE', line: "Scanner reads the credential. Hold it naturally — long enough to look normal, short enough not to get memorized." },
+    { who: 'VALE', line: "Scanner reads the credential. Hold it naturally -- long enough to look normal, short enough not to get memorized." },
   ],
   planLine: (p) => 'Plan says: authority is the access. Own the corridor.',
   planBonus: (cmd) => ['Commit','Bluff','Hold Nerve','Charm'].includes(cmd) ? 1 : ['Stall','Improvise'].includes(cmd) ? -1 : 0,
   table: [{ r:'J', s:'♠', cmd:'Scanner Active' }, { r:'6', s:'♦', cmd:'Uniform Fits' }],
   narrative: (q, cmd) => {
     if(q >= 4) return "The scanner reads. The officer nods. You walk past him at precisely the pace of someone who has done this before, which is the pace that makes you invisible.";
-    if(q >= 2) return `You ${cmd.toLowerCase()} — the scanner passes, the officer hesitates one second, then steps aside. One second is manageable.`;
+    if(q >= 2) return `You ${cmd.toLowerCase()} -- the scanner passes, the officer hesitates one second, then steps aside. One second is manageable.`;
     return `The ${cmd.toLowerCase()} creates friction. He asks you to wait. Vale feeds a name through the earpiece. You say it. He lets you through. Heat is up.`;
   },
   deltas: (q) => ({ plan: q>=3?0:q>=1?-5:-10, heat: q>=3?5:q>=1?12:25, ctrl: q>=3?0:q>=1?0:-8, window: q>=3?-5:q>=1?-8:-14 }),
 },
 
 entry_staff_comp: {
-  cat: 'social', act: 'Act I — Entry',
+  cat: 'social', act: 'Act I -- Entry',
   isComplication: true,
-  title: 'Staff Entrance — The Supervisor Is Watching',
+  title: 'Staff Entrance -- The Supervisor Is Watching',
   body: "The staff entrance is correct. The uniform is correct. The problem is the security supervisor, who is standing beside the officer running the scanner and personally reviewing every credential tonight. He wasn't scheduled. Something changed.",
   comms: () => [
     { who: 'NIX',  line: "He's the head of floor security. Ex-police. He looks at faces, not badges. Do not give him a reason to look twice." },
@@ -504,7 +504,7 @@ entry_staff_comp: {
   planBonus: (cmd) => ['Charm','Commit','Sell the Pause','Hold Nerve'].includes(cmd) ? 1 : ['Improvise','False Panic','Burn Disguise'].includes(cmd) ? -1 : 0,
   table: [{ r:'K', s:'♠', cmd:'Supervisor Present' }, { r:'J', s:'♦', cmd:'Scrutiny' }],
   narrative: (q, cmd) => {
-    if(q >= 4) return `You ${cmd.toLowerCase()} — measured, unhurried, the mild professional patience of someone waiting for a formality to complete. The supervisor glances at you and looks away. He's already thinking about the next person in line.`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} -- measured, unhurried, the mild professional patience of someone waiting for a formality to complete. The supervisor glances at you and looks away. He's already thinking about the next person in line.`;
     if(q >= 2) return `You ${cmd.toLowerCase()}. The supervisor holds the credential slightly longer than necessary. Then he hands it back. He will remember your face.`;
     return `The ${cmd.toLowerCase()} creates exactly the wrong impression. The supervisor steps forward personally. Nix deploys the distraction. It works, but the entry is now flagged in the supervisor's attention.`;
   },
@@ -514,13 +514,13 @@ entry_staff_comp: {
 // ── ACT 2: APPROACH ────────────────────────────────────
 
 approach_movement_clean: {
-  cat: 'movement', act: 'Act II — Approach',
+  cat: 'movement', act: 'Act II -- Approach',
   isComplication: false,
-  title: 'East Wing Corridor — Against the Grain',
+  title: 'East Wing Corridor -- Against the Grain',
   body: "The restoration wing is past a secondary checkpoint. A long corridor, two cameras on alternating rotations, and a guard desk at the far end. The guard is doing his job.",
   comms: () => [
     { who: 'ROOK', line: "Left camera covers the first sixty feet. Gap in rotation is fourteen seconds. Center-left until the pillar, then straight through." },
-    { who: 'VALE', line: "Guard at the desk notices pace changes. Walk like you have somewhere to be — not like you're trying to get somewhere." },
+    { who: 'VALE', line: "Guard at the desk notices pace changes. Walk like you have somewhere to be -- not like you're trying to get somewhere." },
   ],
   planLine: (p) => p.entry === 'Service Route' ? "Plan says: you know this corridor. Rook mapped it. Trust the route." : 'Plan says: movement is permission. Keep walking.',
   planBonus: (cmd) => ['Slip Past','Hold Nerve',"Rook's Route",'Press Forward','Trust the Plan'].includes(cmd) ? 1 : ['Stall','False Panic','Bluff'].includes(cmd) ? -1 : 0,
@@ -534,19 +534,19 @@ approach_movement_clean: {
 },
 
 approach_movement_comp: {
-  cat: 'movement', act: 'Act II — Approach',
+  cat: 'movement', act: 'Act II -- Approach',
   isComplication: true,
-  title: 'East Wing Corridor — The Wrong Celebrity',
-  body: "The corridor is not empty. A minor celebrity — a television presenter, someone whose face everyone recognizes — has wandered off the gala floor with a small orbit of admirers and a photographer. They have stopped directly in front of the restoration wing checkpoint. The guard at the desk is charmed. Everyone is charmed. The corridor is effectively closed.",
+  title: 'East Wing Corridor -- The Wrong Celebrity',
+  body: "The corridor is not empty. A minor celebrity -- a television presenter, someone whose face everyone recognizes -- has wandered off the gala floor with a small orbit of admirers and a photographer. They have stopped directly in front of the restoration wing checkpoint. The guard at the desk is charmed. Everyone is charmed. The corridor is effectively closed.",
   comms: () => [
-    { who: 'NIX',  line: "He responds to attention. Give him more of it — pull the orbit your direction and the corridor opens behind you." },
+    { who: 'NIX',  line: "He responds to attention. Give him more of it -- pull the orbit your direction and the corridor opens behind you." },
     { who: 'VALE', line: "Or go through them. Slowly. A staff member moving through a cluster of donors. Invisible by category." },
   ],
   planLine: (p) => p.entry === 'Service Route' ? 'Plan says: east wing corridor, center-left past the pillar, straight through.' : 'Plan says: movement is permission. Keep walking.',
   planBonus: (cmd) => ['Charm','Slip Past','Take the Heat','Sell the Pause'].includes(cmd) ? 1 : ['Press Forward','Improvise','Hold Nerve'].includes(cmd) ? -1 : 0,
   table: [{ r:'Q', s:'♥', cmd:'Celebrity Orbit' }, { r:'7', s:'♣', cmd:'Guard Distracted' }],
   narrative: (q, cmd) => {
-    if(q >= 4) return `You ${cmd.toLowerCase()} — the celebrity notices you, briefly, with the particular pleasure of someone who enjoys being noticed noticing someone else. The orbit shifts. The corridor opens. You move through it before the photographer turns back.`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} -- the celebrity notices you, briefly, with the particular pleasure of someone who enjoys being noticed noticing someone else. The orbit shifts. The corridor opens. You move through it before the photographer turns back.`;
     if(q >= 2) return `You ${cmd.toLowerCase()} through the cluster at the pace of staff. One of the admirers asks if you work here. You say yes without stopping. They accept it.`;
     return `The ${cmd.toLowerCase()} creates the wrong dynamic. The celebrity's people close around you. You spend two minutes extracting yourself. The window through the corridor narrows.`;
   },
@@ -554,30 +554,30 @@ approach_movement_comp: {
 },
 
 approach_timing_clean: {
-  cat: 'timing', act: 'Act II — Approach',
+  cat: 'timing', act: 'Act II -- Approach',
   isComplication: false,
-  title: 'Service Junction — The Rotation Window',
+  title: 'Service Junction -- The Rotation Window',
   body: "The junction between the service corridor and the display wing has a camera covering both directions. The window is nine seconds every four minutes. Rook has it mapped to the second.",
   comms: () => [
     { who: 'VALE', line: 'Four minutes out. Nine seconds. Do not move early.' },
-    { who: 'ROOK', line: "I can hold the feed three additional seconds if you need it. Say the word before the window opens — not during." },
+    { who: 'ROOK', line: "I can hold the feed three additional seconds if you need it. Say the word before the window opens -- not during." },
   ],
   planLine: (p) => "Plan says: wait for Vale's signal. The window is earned, not taken.",
   planBonus: (cmd) => ['Call Timing','Trust the Plan','Signal','Stall'].includes(cmd) ? 1 : ['Improvise','Press Forward','Take the Heat'].includes(cmd) ? -1 : 0,
   table: [{ r:'A', s:'♣', cmd:'Nine Seconds' }, { r:'3', s:'♠', cmd:'Camera Live' }],
   narrative: (q, cmd) => {
-    if(q >= 4) return "Vale calls it. You move on the signal — nine seconds, clean, through the junction before the camera returns. Rook doesn't even need to hold the feed.";
+    if(q >= 4) return "Vale calls it. You move on the signal -- nine seconds, clean, through the junction before the camera returns. Rook doesn't even need to hold the feed.";
     if(q >= 2) return `You ${cmd.toLowerCase()} and hit the window with two seconds to spare. Rook calls it close on comms.`;
-    return `You ${cmd.toLowerCase()} early — one second ahead of Vale's signal. The camera catches the edge of your movement. Rook loops the feed. He manages it. Barely.`;
+    return `You ${cmd.toLowerCase()} early -- one second ahead of Vale's signal. The camera catches the edge of your movement. Rook loops the feed. He manages it. Barely.`;
   },
   deltas: (q) => ({ plan: q>=3?5:q>=1?0:-10, heat: q>=3?0:q>=1?8:20, ctrl: q>=3?5:q>=1?0:-10, window: q>=3?-5:q>=1?-9:-16 }),
 },
 
 approach_timing_comp: {
-  cat: 'timing', act: 'Act II — Approach',
+  cat: 'timing', act: 'Act II -- Approach',
   isComplication: true,
-  title: 'Service Junction — Rook Is Late',
-  body: "The junction is where it should be. The window is not. Vale is counting but the camera rotation has changed — someone on the security staff adjusted the schedule, and Rook's map is running twenty seconds behind. The window will come, but not when expected.",
+  title: 'Service Junction -- Rook Is Late',
+  body: "The junction is where it should be. The window is not. Vale is counting but the camera rotation has changed -- someone on the security staff adjusted the schedule, and Rook's map is running twenty seconds behind. The window will come, but not when expected.",
   comms: () => [
     { who: 'VALE', line: "Rotation is off. I'm recalculating. Hold your position. Do not move until I call it." },
     { who: 'ROOK', line: "I see it. Working the new count now. Thirty seconds." },
@@ -586,7 +586,7 @@ approach_timing_comp: {
   planBonus: (cmd) => ['Call Timing','Trust the Plan','Stall','Hold Nerve'].includes(cmd) ? 1 : ['Improvise','Press Forward','Signal'].includes(cmd) ? -1 : 0,
   table: [{ r:'K', s:'♣', cmd:'Count Is Off' }, { r:'4', s:'♠', cmd:'Holding Position' }],
   narrative: (q, cmd) => {
-    if(q >= 4) return `You ${cmd.toLowerCase()} — hold, wait, trust the new count. Vale calls it. The window comes thirty seconds late but clean. Rook confirms on the other side.`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} -- hold, wait, trust the new count. Vale calls it. The window comes thirty seconds late but clean. Rook confirms on the other side.`;
     if(q >= 2) return `You ${cmd.toLowerCase()}. The wait feels long. You move on Vale's call and clear the junction with a second to spare. The delay cost time, not exposure.`;
     return `You ${cmd.toLowerCase()} and move before Vale finishes recalculating. The camera catches your movement. Rook scrambles. The footage is looped but the timing buffer is gone.`;
   },
@@ -596,13 +596,13 @@ approach_timing_comp: {
 // ── ACT 3: VAULT ───────────────────────────────────────
 
 vault_timing_clean: {
-  cat: 'timing', act: 'Act III — The Vault',
+  cat: 'timing', act: 'Act III -- The Vault',
   isComplication: false,
   isVault: true,
-  title: "Restoration Wing — The Guard's Pattern",
-  body: "The restoration wing runs two guards on a staggered rotation. The window between them is four minutes — long enough, but only if Vale has the timing right. The display case is twenty feet away.",
+  title: "Restoration Wing -- The Guard's Pattern",
+  body: "The restoration wing runs two guards on a staggered rotation. The window between them is four minutes -- long enough, but only if Vale has the timing right. The display case is twenty feet away.",
   comms: () => [
-    { who: 'VALE', line: 'First guard clears in ninety seconds. Second guard enters at four-ten. Two forty of clean floor. Approach only — do not touch the case until I say.' },
+    { who: 'VALE', line: 'First guard clears in ninety seconds. Second guard enters at four-ten. Two forty of clean floor. Approach only -- do not touch the case until I say.' },
     { who: 'ROOK', line: 'Pressure sensor deactivates on the override code. Code is live from the moment you call it. Call it when you are ready, not before.' },
   ],
   planLine: (p) => 'Plan says: this is timing, not speed. Let Vale count it down.',
@@ -610,17 +610,17 @@ vault_timing_clean: {
   table: [{ r:'K', s:'♠', cmd:'Guard Position' }, { r:'4', s:'♥', cmd:'Window Opening' }],
   narrative: (q, cmd) => {
     if(q >= 4) return "Vale's count is exact. You move on signal, reach the case in thirty seconds, call the override with time to position. The window opens the way it was supposed to.";
-    if(q >= 2) return `You ${cmd.toLowerCase()} — timing slightly off but inside tolerance. You are at the case with ninety seconds remaining.`;
+    if(q >= 2) return `You ${cmd.toLowerCase()} -- timing slightly off but inside tolerance. You are at the case with ninety seconds remaining.`;
     return `The ${cmd.toLowerCase()} costs forty seconds. You reach the case with fifty seconds left. Not enough for the planned approach. You adapt. The adaptation is visible on one camera.`;
   },
   deltas: (q) => ({ plan: q>=3?5:q>=1?0:-10, heat: q>=3?0:q>=1?8:18, ctrl: q>=3?5:q>=1?0:-10, window: q>=3?-8:q>=1?-12:-20 }),
 },
 
 vault_timing_comp: {
-  cat: 'timing', act: 'Act III — The Vault',
+  cat: 'timing', act: 'Act III -- The Vault',
   isComplication: true,
   isVault: true,
-  title: "Restoration Wing — The Rotation Changed",
+  title: "Restoration Wing -- The Rotation Changed",
   body: "The restoration wing rotation has been shortened. Four-minute windows are now two-minute windows. Someone adjusted the schedule tonight, and Rook's count is wrong. The display case is twenty feet away and the guard will be back in ninety seconds.",
   comms: () => [
     { who: 'VALE', line: "Rotation is half what Rook mapped. I don't know why. You have ninety seconds to reach the case and call the override. Not four minutes. Ninety seconds." },
@@ -630,7 +630,7 @@ vault_timing_comp: {
   planBonus: (cmd) => ['Press Forward','Call Timing','Trust the Plan'].includes(cmd) ? 1 : ['Stall','Hold Nerve','Improvise'].includes(cmd) ? -1 : 0,
   table: [{ r:'2', s:'♥', cmd:'Ninety Seconds' }, { r:'K', s:'♠', cmd:'Guard Returning' }],
   narrative: (q, cmd) => {
-    if(q >= 4) return `You ${cmd.toLowerCase()} — immediately, decisively. The ninety seconds are tight but you reach the case with fifteen to spare. The override code is called. Rook confirms the sensor.`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} -- immediately, decisively. The ninety seconds are tight but you reach the case with fifteen to spare. The override code is called. Rook confirms the sensor.`;
     if(q >= 2) return `You ${cmd.toLowerCase()} and make it with five seconds. Not the margin the plan assumed. Vale doesn't say anything but her breathing changes on comms.`;
     return `The ${cmd.toLowerCase()} costs you the window. The guard returns before the override is called. You abort the approach and reset. The vault scene has to run again on the next rotation.`;
   },
@@ -638,10 +638,10 @@ vault_timing_comp: {
 },
 
 vault_transfer_clean: {
-  cat: 'transfer', act: 'Act III — The Vault',
+  cat: 'transfer', act: 'Act III -- The Vault',
   isComplication: false,
   isVault: true,
-  title: 'Display Case — The Moment of Contact',
+  title: 'Display Case -- The Moment of Contact',
   body: "The sapphire is here. Cushion cut, 24 carats, in a sealed transport case on a lit pedestal. Rook's override code is live. The sensor is deactivated. Sixty seconds.",
   comms: () => [
     { who: 'ROOK', line: 'Override active. Sixty seconds before auto-reset. Case opens on the left hinge.' },
@@ -653,7 +653,7 @@ vault_transfer_clean: {
   narrative: (q, cmd, p) => {
     const grab = p.grab === 'Clean Swap' ? 'The replica goes in. The real stone comes out.' : p.grab === 'Hidden Transfer' ? 'The stone is off your body in under fifteen seconds.' : 'The stone is out. Fast, as planned.';
     if(q >= 4) return `${grab} You ${cmd.toLowerCase()} and the moment closes cleanly. Rook confirms the sensor reset. Vale starts the exit count.`;
-    if(q >= 2) return `You ${cmd.toLowerCase()}. ${grab} A small error in the sequence — corrected, but Vale marks it.`;
+    if(q >= 2) return `You ${cmd.toLowerCase()}. ${grab} A small error in the sequence -- corrected, but Vale marks it.`;
     return `The ${cmd.toLowerCase()} creates friction at the worst moment. The case sensor chirps once before Rook mutes it. The stone is in hand but the operation just became harder.`;
   },
   targetChange: (q) => q >= 1 ? 'secured' : null,
@@ -661,13 +661,13 @@ vault_transfer_clean: {
 },
 
 vault_transfer_comp: {
-  cat: 'transfer', act: 'Act III — The Vault',
+  cat: 'transfer', act: 'Act III -- The Vault',
   isComplication: true,
   isVault: true,
-  title: 'Display Case — The Codes Have Cycled',
-  body: "The codes reset early. Rook's override is dead. The case is sealed and the sensor is live. The stone is visible through the glass. The guard rotation has three minutes left. Someone changed the reset schedule tonight — or someone wanted you to arrive after the reset.",
+  title: 'Display Case -- The Codes Have Cycled',
+  body: "The codes reset early. Rook's override is dead. The case is sealed and the sensor is live. The stone is visible through the glass. The guard rotation has three minutes left. Someone changed the reset schedule tonight -- or someone wanted you to arrive after the reset.",
   comms: () => [
-    { who: 'ROOK', line: "I'm running a bypass. It's slower than the override — ninety seconds minimum. Hold position." },
+    { who: 'ROOK', line: "I'm running a bypass. It's slower than the override -- ninety seconds minimum. Hold position." },
     { who: 'VALE', line: 'Guard rotation in three minutes. You have time. Not comfortable time.' },
   ],
   planLine: (p) => p.grab === 'Clean Swap' ? 'Plan says: override active, replica in, stone out. Rook holds the sensor.' : p.grab === 'Hidden Transfer' ? 'Plan says: override active, stone transfers immediately. Do not carry it out yourself.' : 'Plan says: override active, sixty seconds. Fast and clean.',
@@ -675,7 +675,7 @@ vault_transfer_comp: {
   table: [{ r:'3', s:'♦', cmd:'Bypass Running' }, { r:'K', s:'♥', cmd:'Codes Dead' }],
   narrative: (q, cmd, p) => {
     const grab = p.grab === 'Clean Swap' ? 'The replica goes in. The stone comes out.' : p.grab === 'Hidden Transfer' ? 'The stone moves off your body immediately.' : 'The stone is secured.';
-    if(q >= 4) return `You ${cmd.toLowerCase()} — hold position, trust the bypass. Rook calls it at eighty seconds. The case opens. ${grab}`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} -- hold position, trust the bypass. Rook calls it at eighty seconds. The case opens. ${grab}`;
     if(q >= 2) return `You ${cmd.toLowerCase()}. The bypass runs long. Two minutes and twelve seconds. The guard rotation has started when the case opens. ${grab} You move before the guard reaches the wing.`;
     return `The ${cmd.toLowerCase()} pushes you to act before the bypass completes. The sensor is still live. The case opens but the alarm registers for four seconds before Rook mutes it. Heat is up.`;
   },
@@ -686,28 +686,28 @@ vault_transfer_comp: {
 // ── ACT 4: CRISIS ──────────────────────────────────────
 
 crisis_heat_clean: {
-  cat: 'heat', act: 'Act IV — Crisis',
+  cat: 'heat', act: 'Act IV -- Crisis',
   isComplication: false,
-  title: "Service Corridor — Someone's Watching",
-  body: "Two guards appear at the far end of the service corridor — ahead of rotation. They're not running, they haven't been radioed. But they're moving with the particular purpose of people who have been told to look for something.",
+  title: "Service Corridor -- Someone's Watching",
+  body: "Two guards appear at the far end of the service corridor -- ahead of rotation. They're not running, they haven't been radioed. But they're moving with the particular purpose of people who have been told to look for something.",
   comms: (p) => [
     { who: 'VALE', line: p.grab === 'Hidden Transfer'
-      ? "They're not after you — you're clean. But Nix is moving through the east corridor right now. If they shift that direction, the stone is in play."
+      ? "They're not after you -- you're clean. But Nix is moving through the east corridor right now. If they shift that direction, the stone is in play."
       : "They're not responding to an alarm. Someone reported something. Don't know what. Do not give them a reason to confirm it." },
     { who: 'NIX',  line: p.grab === 'Hidden Transfer'
       ? "I have it. I'm still moving. Give me thirty seconds and do not draw their attention east."
-      : "I can create a distraction at the east staircase in thirty seconds. Give me the word — but it costs me my position for the rest of the run." },
+      : "I can create a distraction at the east staircase in thirty seconds. Give me the word -- but it costs me my position for the rest of the run." },
   ],
   planLine: (p) => p.grab === 'Fast Snatch' ? 'Plan says: service corridor to loading bay. Move at pace, no stops.' : p.grab === 'Hidden Transfer' ? 'Plan says: you exit clean. Nix carries the stone out separately.' : 'Plan says: service corridor, straight to the loading bay.',
   planBonus: (cmd) => ['Hold Nerve','Stall','False Panic','Fold Cover','Signal'].includes(cmd) ? 1 : ['Press Forward','Burn Disguise','Improvise'].includes(cmd) ? -1 : 0,
   table: [{ r:'10', s:'♠', cmd:'Guards Approaching' }, { r:'6', s:'♣', cmd:'Stone Moving' }],
   narrative: (q, cmd, p) => {
     if(p.grab === 'Hidden Transfer') {
-      if(q >= 4) return `You ${cmd.toLowerCase()} — drawing their attention to you, away from the east corridor. The guards pass through without altering direction. Nix confirms on comms, one word: "Clear."`;
+      if(q >= 4) return `You ${cmd.toLowerCase()} -- drawing their attention to you, away from the east corridor. The guards pass through without altering direction. Nix confirms on comms, one word: "Clear."`;
       if(q >= 2) return `You ${cmd.toLowerCase()}. One guard slows near the east corridor entrance. Nix holds position. The guard moves on. The stone keeps moving.`;
       return `The ${cmd.toLowerCase()} isn't enough. One guard cuts toward the east corridor. Nix improvises a new route. He makes it, but the stone takes three extra minutes to move and the window shrinks.`;
     }
-    if(q >= 4) return `You ${cmd.toLowerCase()}. The guards pass through the corridor without stopping. One of them looks at you — through you, not at you. Vale exhales on comms.`;
+    if(q >= 4) return `You ${cmd.toLowerCase()}. The guards pass through the corridor without stopping. One of them looks at you -- through you, not at you. Vale exhales on comms.`;
     if(q >= 2) return `You ${cmd.toLowerCase()}. One guard pauses. His colleague keeps walking. He follows. The corridor clears. Heat is up but the stone is moving.`;
     return `The ${cmd.toLowerCase()} draws exactly the wrong attention. Questions are asked. Nix fires the distraction. It works but the corridor is now watched.`;
   },
@@ -715,9 +715,9 @@ crisis_heat_clean: {
 },
 
 crisis_heat_comp: {
-  cat: 'heat', act: 'Act IV — Crisis',
+  cat: 'heat', act: 'Act IV -- Crisis',
   isComplication: true,
-  title: 'Service Corridor — The Supervisor Again',
+  title: 'Service Corridor -- The Supervisor Again',
   body: "The security supervisor from the entry is in the service corridor. He shouldn't be here. He doesn't have a reason to be here that you can identify. He is standing at the junction where you need to turn, looking at his phone, and he has the particular stillness of someone who is waiting rather than passing through.",
   comms: (p) => [
     { who: 'VALE', line: "He's not on his radio. He's not looking for you specifically. But he's between you and the exit and he remembers faces." },
@@ -730,9 +730,9 @@ crisis_heat_comp: {
   table: [{ r:'K', s:'♥', cmd:'Supervisor Waiting' }, { r:'3', s:'♣', cmd:'Junction Blocked' }],
   narrative: (q, cmd, p) => {
     const stoneNote = p.grab === 'Fast Snatch' ? ' The stone is on you the entire time.' : p.grab === 'Hidden Transfer' ? ' Behind him, Nix is already through.' : '';
-    if(q >= 4) return `You ${cmd.toLowerCase()} — through the junction with the unhurried presence of someone who belongs exactly where they are. The supervisor glances up from his phone and looks back down. You are past him before he finishes the thought.${stoneNote}`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} -- through the junction with the unhurried presence of someone who belongs exactly where they are. The supervisor glances up from his phone and looks back down. You are past him before he finishes the thought.${stoneNote}`;
     if(q >= 2) return `You ${cmd.toLowerCase()}. The supervisor looks up. Holds his attention on you for two full seconds. Then his phone buzzes and his focus breaks. You keep moving.${stoneNote}`;
-    return `The ${cmd.toLowerCase()} confirms what he suspected. He steps forward. You have to give him something — a name, a reason, something Vale feeds through the earpiece — and it costs you forty seconds and his full attention.${stoneNote}`;
+    return `The ${cmd.toLowerCase()} confirms what he suspected. He steps forward. You have to give him something -- a name, a reason, something Vale feeds through the earpiece -- and it costs you forty seconds and his full attention.${stoneNote}`;
   },
   deltas: (q) => ({ plan: q>=3?0:q>=1?-12:-25, heat: q>=3?10:q>=1?25:42, ctrl: q>=3?0:q>=1?-12:-25, window: q>=3?-8:q>=1?-16:-26 }),
 },
@@ -740,10 +740,10 @@ crisis_heat_comp: {
 // ── REVERSAL ───────────────────────────────────────────
 
 reversal: {
-  cat: 'reversal', act: 'Act IV — Crisis',
+  cat: 'reversal', act: 'Act IV -- Crisis',
   isComplication: true,
   isReversal: true,
-  title: 'Service Exit — Caught',
+  title: 'Service Exit -- Caught',
   body: "The exit is blocked. The security supervisor and a backup guard. They have a description that matches you. Your access badge is removed before you can speak. The stone is on you. There is no corridor behind you.",
   comms: () => [
     { who: 'VALE', line: "...I'm here." },
@@ -755,9 +755,9 @@ reversal: {
   narrative: (q, cmd, p) => {
     // Narrative for contingency fire is handled by the contingency reveal panel.
     // This covers the non-contingency outcomes.
-    if(q >= 1) return `You ${cmd.toLowerCase()}. The supervisor is not satisfied but he is uncertain. He holds you in a side room for eleven minutes. The stone is still on you when they release you — they searched the wrong pocket.`;
-    if(q >= 0) return `You ${cmd.toLowerCase()} — the pressure shows. They search thoroughly. The stone is in a pocket they almost miss. Almost.`;
-    return `You ${cmd.toLowerCase()} — the wrong choice under this pressure. The stone is found. The operation is formally over. Vale doesn't say anything on comms for a long time.`;
+    if(q >= 1) return `You ${cmd.toLowerCase()}. The supervisor is not satisfied but he is uncertain. He holds you in a side room for eleven minutes. The stone is still on you when they release you -- they searched the wrong pocket.`;
+    if(q >= 0) return `You ${cmd.toLowerCase()} -- the pressure shows. They search thoroughly. The stone is in a pocket they almost miss. Almost.`;
+    return `You ${cmd.toLowerCase()} -- the wrong choice under this pressure. The stone is found. The operation is formally over. Vale doesn't say anything on comms for a long time.`;
   },
   deltas: (q, p, cmd) => {
     // Contingency fires: content package handles target state change via checkContingencyReveal.
@@ -773,12 +773,12 @@ reversal: {
 // ── ACT 5: EXIT ────────────────────────────────────────
 
 exit_clean: {
-  cat: 'movement', act: 'Act V — Exit',
+  cat: 'movement', act: 'Act V -- Exit',
   isComplication: false,
-  title: 'Loading Bay — The Last Corridor',
+  title: 'Loading Bay -- The Last Corridor',
   body: "The loading bay is sixty feet ahead. Rook has the door on a thirty-second timer. Whatever happened behind you is already becoming a story that will be told differently each time. The door is what matters.",
   comms: () => [
-    { who: 'VALE', line: "Car is outside. Thirty seconds. Walk out the way you walked in — like you're done here and there was never anything unusual about it." },
+    { who: 'VALE', line: "Car is outside. Thirty seconds. Walk out the way you walked in -- like you're done here and there was never anything unusual about it." },
     { who: 'NIX',  line: "I'm already outside. You're the last one. Move." },
   ],
   planLine: (p) => p.grab === 'Fast Snatch' ? 'Plan says: walk, do not run. The stone has been on you the whole way. Last sixty feet.' : p.grab === 'Hidden Transfer' ? 'Plan says: walk out clean. Nix is handling the rest.' : 'Plan says: walk, do not run. You are done here. Act like it.',
@@ -786,7 +786,7 @@ exit_clean: {
   table: [{ r:'8', s:'♦', cmd:'Bay Ahead' }, { r:'5', s:'♠', cmd:'Thirty Seconds' }],
   narrative: (q, cmd, p) => {
     const grabNote = p.grab === 'Fast Snatch'
-      ? ' The stone has been on you since the vault. You walk out with it the way you walked in with nothing — at exactly the same pace.'
+      ? ' The stone has been on you since the vault. You walk out with it the way you walked in with nothing -- at exactly the same pace.'
       : p.grab === 'Hidden Transfer'
       ? ' The stone left your body in the vault. You walk out clean. Somewhere ahead, Nix carries what you came for.'
       : p.grab === 'Clean Swap'
@@ -794,16 +794,16 @@ exit_clean: {
       : '';
     if(q >= 4) return `Rook opens the door. You walk through it at exactly the right pace. The car is where it was supposed to be. Vale says one word on comms: "Clean."${grabNote}`;
     if(q >= 2) return `You ${cmd.toLowerCase()} through the corridor. The door opens four seconds late. You adapt. The car is there.${grabNote}`;
-    return `The ${cmd.toLowerCase()} costs time. There is a moment — just a moment — when it could have gone the other way. Then it doesn't, and the door is behind you.`;
+    return `The ${cmd.toLowerCase()} costs time. There is a moment -- just a moment -- when it could have gone the other way. Then it doesn't, and the door is behind you.`;
   },
   deltas: (q) => ({ plan: 0, heat: q>=3?-5:q>=1?5:15, ctrl: q>=3?10:q>=1?0:-10, window: q>=3?-4:q>=1?-8:-14 }),
 },
 
 exit_high_heat: {
-  cat: 'social', act: 'Act V — Exit',
+  cat: 'social', act: 'Act V -- Exit',
   isComplication: false,
-  title: 'East Lobby — Back Through the Front',
-  body: "Heat is high enough that the service routes are watched. You go back the way some people came in — through the east lobby, through the donors, through the noise. One more performance.",
+  title: 'East Lobby -- Back Through the Front',
+  body: "Heat is high enough that the service routes are watched. You go back the way some people came in -- through the east lobby, through the donors, through the noise. One more performance.",
   comms: () => [
     { who: 'NIX',  line: "I'm on the floor. I can walk with you. Two people leaving a party together are invisible." },
     { who: 'VALE', line: "Front desk won't stop you leaving. Keep moving forward. Do not look at the supervisor." },
@@ -815,7 +815,7 @@ exit_high_heat: {
     // Discovery spike: if Clean Swap and window collapsed, someone noticed
     const discoveryFired = p.grab === 'Clean Swap' && (p._windowAtExit || 50) < 25;
     const discoveryLine = discoveryFired ? ' Behind you, somewhere in the restoration wing, someone has noticed the case.' : '';
-    if(q >= 4) return `You ${cmd.toLowerCase()} through the lobby — one donor among dozens saying their goodnights. Nobody stops you. Nobody looks. The door opens onto the street.${discoveryLine}`;
+    if(q >= 4) return `You ${cmd.toLowerCase()} through the lobby -- one donor among dozens saying their goodnights. Nobody stops you. Nobody looks. The door opens onto the street.${discoveryLine}`;
     if(q >= 2) return `You ${cmd.toLowerCase()} and keep moving. Someone near the door makes eye contact a beat too long. You don't stop. Neither does he, eventually.${discoveryLine}`;
     return `The ${cmd.toLowerCase()} draws one moment of real attention. Nix appears beside you, says something charming to the nearest guest, and the moment passes. The exit is thirty feet away.${discoveryLine}`;
   },
