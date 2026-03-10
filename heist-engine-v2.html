@@ -369,7 +369,7 @@ body { font-family: 'DM Mono', monospace; color: var(--ivory); font-size: 13px; 
 <div id="s-burn" class="screen">
   <div class="burn-eyebrow">Operation Collapsed</div>
   <div class="burn-comms" id="burn-comms"></div>
-  <div class="burn-silence" id="burn-silence">— signal lost —</div>
+  <div class="burn-silence" id="burn-silence">-- signal lost --</div>
   <div class="burn-foot" id="burn-foot">
     <button class="btn btn-ghost btn-sm" onclick="G.restart()">Try Again</button>
   </div>
@@ -547,7 +547,7 @@ function assignCmds(cards) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// RUN STRUCTURE — ENGINE OWNS THIS
+// RUN STRUCTURE -- ENGINE OWNS THIS
 // Content supplies scene pools via actScenes[].
 // Engine decides how to sequence them.
 // ═══════════════════════════════════════════════════════════
@@ -780,13 +780,13 @@ window.G = (() => {
     const meta = mk('div','scene-meta');
     const numEl = mk('div','scene-num'); numEl.textContent = `Scene ${S.sceneIdx+1} of ${S.runStructure.length}`;
     const catEl = mk('div', `cat-badge${def.isComplication?' complication':''}`);
-    catEl.textContent = def.cat.toUpperCase() + (def.isComplication?' — COMPLICATION':'');
+    catEl.textContent = def.cat.toUpperCase() + (def.isComplication?' -- COMPLICATION':'');
     meta.append(numEl, catEl); sw.appendChild(meta);
 
     const titleEl = mk('div','scene-title'); titleEl.textContent = def.title; sw.appendChild(titleEl);
     const bodyEl  = mk('div','scene-body');  bodyEl.textContent  = def.body;  sw.appendChild(bodyEl);
 
-    // Comms — always a function, never an array
+    // Comms -- always a function, never an array
     const bt = C.betrayal;
     const commsData = def.comms(S.plan);
     const commsEl = mk('div','comms');
@@ -801,7 +801,7 @@ window.G = (() => {
     });
     sw.appendChild(commsEl);
 
-    // Plan line — label and urgency suffix from content
+    // Plan line -- label and urgency suffix from content
     const pl    = mk('div','plan-line'+(winUrgent?' urgent':''));
     const plLbl = mk('span','pl-lbl'); plLbl.textContent = C.planLineLabel || 'Plan';
     const plTxt = mk('span','pl-text'+(winUrgent?' urgent':''));
@@ -880,8 +880,8 @@ window.G = (() => {
 
     const ph   = S.selPhase;
     const phEl = mk('div',`sel-phase p-${ph==='command'?'cmd':ph==='support'?'sup':'done'}`);
-    phEl.textContent = ph==='command' ? 'Step 1 — Choose your Command'
-                     : ph==='support' ? `Step 2 — Choose ${2-S.supCards.length} Support Card${2-S.supCards.length===1?'':'s'}`
+    phEl.textContent = ph==='command' ? 'Step 1 -- Choose your Command'
+                     : ph==='support' ? `Step 2 -- Choose ${2-S.supCards.length} Support Card${2-S.supCards.length===1?'':'s'}`
                      : 'Hand Ready';
     selA.appendChild(phEl);
 
@@ -890,21 +890,21 @@ window.G = (() => {
     const csh = mk('div','slot-hdr'); csh.textContent='What are you doing?';
     cs.appendChild(csh);
     if(S.cmdCard) cs.appendChild(miniCard(S.cmdCard));
-    else { const e=mk('div','slot-empty'); e.textContent='—'; cs.appendChild(e); }
+    else { const e=mk('div','slot-empty'); e.textContent='--'; cs.appendChild(e); }
     slots.appendChild(cs); slots.appendChild(mk('div','slot-div'));
     [0,1].forEach(i => {
       const ss = mk('div','slot sup-slot'+(S.supCards[i]?' filled':''));
       const sh = mk('div','slot-hdr'); sh.textContent=i===0?'Build the hand':'+ Support';
       ss.appendChild(sh);
       if(S.supCards[i]) ss.appendChild(miniCard(S.supCards[i]));
-      else { const e=mk('div','slot-empty'); e.textContent='—'; ss.appendChild(e); }
+      else { const e=mk('div','slot-empty'); e.textContent='--'; ss.appendChild(e); }
       slots.appendChild(ss);
     });
     selA.appendChild(slots);
 
     const ar = mk('div','action-row');
     const ht = mk('div','hint');
-    ht.textContent = ph==='command' ? 'Tap a card — this is your operative command.'
+    ht.textContent = ph==='command' ? 'Tap a card -- this is your operative command.'
                    : ph==='support' ? `Tap ${2-S.supCards.length} card${2-S.supCards.length===1?'':'s'} to build the hand.`
                    : 'Command locked. Hand ready.';
     ar.appendChild(ht);
@@ -967,7 +967,7 @@ window.G = (() => {
       bt.fireSceneKeys.includes(def.key) &&
       S.sceneIdx === bt.fireScene && !S.betrayalRevealed;
 
-    // Contingency check — content owns this entirely
+    // Contingency check -- content owns this entirely
     let contingencyResult = null;
     if(def.isReversal && C.checkContingencyReveal) {
       contingencyResult = C.checkContingencyReveal(S.plan, cmd, quality);
@@ -1016,7 +1016,7 @@ window.G = (() => {
     // Narrative
     const narr = def.narrative(quality, cmd, S.plan, S.betrayalActive);
 
-    // Poker beat — content owns all character-specific language
+    // Poker beat -- content owns all character-specific language
     const beatLine = C.pokerBeatLine
       ? C.pokerBeatLine(pr.tier, def.cat, def.isReversal||false, !!(def.isVault), quality, S)
       : '';
@@ -1053,12 +1053,12 @@ window.G = (() => {
 
     const betrayalHtml = betrayalFires && bt ? `
       <div class="betrayal-reveal show">
-        <div class="betrayal-head">${bt.betrayerName} — Signal Lost</div>
+        <div class="betrayal-head">${bt.betrayerName} -- Signal Lost</div>
         <div class="betrayal-body">${bt.revealBody.replace(/\n/g,'<br><br>')}</div>
       </div>` : '';
 
     const badges = [
-      `<span class="rbadge tactic">${tLbls[tf]||'Neutral'} — ${cmd}</span>`,
+      `<span class="rbadge tactic">${tLbls[tf]||'Neutral'} -- ${cmd}</span>`,
       `<span class="rbadge poker">${pr.name}</span>`,
       pb ? `<span class="rbadge ${pb>0?'plan-ok':'plan-vio'}">${pb>0?'Plan honored':'Plan violated'}</span>` : '',
       (d.window||0)<-10 ? `<span class="rbadge window-cost">Window −${Math.abs(d.window)}</span>` : '',
