@@ -650,7 +650,7 @@ function loadHeist(opManifest) {
   s.dataset.heist = opManifest.id;
   s.onload  = () => initHeist();
   s.onerror = () => alert(`Could not load operation: ${opManifest.title}`);
-  document.getElementById('content-scripts').appendChild(s);
+  document.head.appendChild(s);
 }
 
 function initHeist() {
