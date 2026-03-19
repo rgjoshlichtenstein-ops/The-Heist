@@ -7,15 +7,15 @@ window.HEIST_CONTENT = {
 
 // ── IDENTITY ─────────────────────────────────────────────
 
-id: ‘vandermeer’,
-title: ‘THE HEIST’,
-eyebrow: ‘Museum Gala · One Night · Four People’,
-subtitle: "The Vandermeer Sapphire. The Alderton Museum. The plan is good. Trust everyone until you can’t.",
+id: 'vandermeer',
+title: 'THE HEIST',
+eyebrow: 'Museum Gala · One Night · Four People',
+subtitle: "The Vandermeer Sapphire. The Alderton Museum. The plan is good. Trust everyone until you can't.",
 
 crew: [
-{ name: ‘Vale’, role: ‘comms & timing’ },
-{ name: ‘Nix’,  role: ‘social & disguise’ },
-{ name: ‘Rook’, role: ‘routes & infrastructure’ },
+{ name: 'Vale', role: 'comms & timing' },
+{ name: 'Nix',  role: 'social & disguise' },
+{ name: 'Rook', role: 'routes & infrastructure' },
 ],
 
 // ── TARGET STATES ────────────────────────────────────────
@@ -23,21 +23,21 @@ crew: [
 // Content supplies the display strings and success keys.
 
 target: {
-initial: ‘not_secured’,
+initial: 'not_secured',
 displayStrings: {
-not_secured: ‘Target: Not Secured’,
-secured:     ‘Target: Secured’,
-transferred: ‘Target: Transferred’,
-lost:        ‘Target: Lost’,
+not_secured: 'Target: Not Secured',
+secured:     'Target: Secured',
+transferred: 'Target: Transferred',
+lost:        'Target: Lost',
 },
 // Keys that count as successful extraction
-successKeys: [‘secured’, ‘transferred’],
+successKeys: ['secured', 'transferred'],
 // CSS modifier classes for HUD display
 hudClasses: {
-not_secured: ‘’,
-secured:     ‘secured’,
-transferred: ‘transferred’,
-lost:        ‘lost’,
+not_secured: '',
+secured:     'secured',
+transferred: 'transferred',
+lost:        'lost',
 },
 },
 
@@ -45,45 +45,45 @@ lost:        ‘lost’,
 // The label shown above the plan line in each scene.
 // Remove "Vale" here if another heist uses a different comms voice.
 
-planLineLabel: ‘Vale -- Plan’,
+planLineLabel: 'Vale -- Plan',
 
 // ── WINDOW URGENCY LINE ──────────────────────────────────
 // Appended to the plan line text when window < urgency threshold.
 
-windowUrgencyLine: ‘The window is closing.’,
+windowUrgencyLine: 'The window is closing.',
 
 // ── PLAN SCREEN ──────────────────────────────────────────
 
-planPhase: ‘Phase One’,
-planTitle: ‘The Plan’,
-planBrief: ‘The Vandermeer Sapphire is on display tonight. The access codes reset at midnight. Commit your approach before the doors open.’,
+planPhase: 'Phase One',
+planTitle: 'The Plan',
+planBrief: 'The Vandermeer Sapphire is on display tonight. The access codes reset at midnight. Commit your approach before the doors open.',
 
 planCategories: [
 {
-key: ‘entry’,
-label: ‘Entry Approach’,
+key: 'entry',
+label: 'Entry Approach',
 options: [
-{ value: ‘Front Social’,        name: ‘Front Social’,        desc: ‘Donor credentials. Walk through the front. The gala is the cover.’ },
-{ value: ‘Service Route’,       name: ‘Service Route’,       desc: ‘Back corridors and freight access. Invisible to the floor. Rook mapped it Thursday.’ },
-{ value: ‘Staff Impersonation’, name: ‘Staff Impersonation’, desc: ‘Vendor uniform and a forged credential. Authority by category.’ },
+{ value: 'Front Social',        name: 'Front Social',        desc: 'Donor credentials. Walk through the front. The gala is the cover.' },
+{ value: 'Service Route',       name: 'Service Route',       desc: 'Back corridors and freight access. Invisible to the floor. Rook mapped it Thursday.' },
+{ value: 'Staff Impersonation', name: 'Staff Impersonation', desc: 'Vendor uniform and a forged credential. Authority by category.' },
 ],
 },
 {
-key: ‘grab’,
-label: ‘Grab Style’,
+key: 'grab',
+label: 'Grab Style',
 options: [
-{ value: ‘Fast Snatch’,     name: ‘Fast Snatch’,     desc: ‘Take the stone and move. No swap, no transfer. Exposure is the cost.’ },
-{ value: ‘Clean Swap’,      name: ‘Clean Swap’,      desc: ‘Replace with a prepared replica. Nobody knows until someone looks closely.’ },
-{ value: ‘Hidden Transfer’, name: ‘Hidden Transfer’, desc: ‘Stone moves off your body immediately. Nix carries it out separately.’ },
+{ value: 'Fast Snatch',     name: 'Fast Snatch',     desc: 'Take the stone and move. No swap, no transfer. Exposure is the cost.' },
+{ value: 'Clean Swap',      name: 'Clean Swap',      desc: 'Replace with a prepared replica. Nobody knows until someone looks closely.' },
+{ value: 'Hidden Transfer', name: 'Hidden Transfer', desc: 'Stone moves off your body immediately. Nix carries it out separately.' },
 ],
 },
 {
-key: ‘contingency’,
-label: ‘Contingency’,
+key: 'contingency',
+label: 'Contingency',
 options: [
-{ value: ‘Inside Blue’, name: ‘Inside Blue’, desc: ‘A planted contact in museum security. Active only if the plan breaks entirely.’ },
-{ value: ‘Lights Out’,  name: ‘Lights Out’,  desc: ‘Rook cuts power on signal. Thirty seconds of controlled darkness.’ },
-{ value: ‘Decoy Case’,  name: ‘Decoy Case’,  desc: ‘A prepared duplicate transport case. Buys time and confusion if you're caught.’ },
+{ value: 'Inside Blue', name: 'Inside Blue', desc: 'A planted contact in museum security. Active only if the plan breaks entirely.' },
+{ value: 'Lights Out',  name: 'Lights Out',  desc: 'Rook cuts power on signal. Thirty seconds of controlled darkness.' },
+{ value: 'Decoy Case',  name: 'Decoy Case',  desc: "A prepared duplicate transport case. Buys time and confusion if you're caught." },
 ],
 },
 ],
@@ -92,15 +92,15 @@ options: [
 
 betrayal: {
 probability: 0.33,
-betrayerName: ‘ROOK’,
+betrayerName: 'ROOK',
 // Scene indices where betrayer goes silent on comms
 silentScenes: [2, 3, 4],
 // Scene index at which betrayal fires (vault transfer)
 fireScene: 4,
 // Scene keys that are eligible to fire the betrayal
-fireSceneKeys: [‘vault_timing_clean’,‘vault_timing_comp’,‘vault_transfer_clean’,‘vault_transfer_comp’],
-revealHead: ‘Rook -- Signal Lost’,
-revealBody: "The alarm kill was called. The alarm is still live.\n\nRook comes back on comms forty seconds later. His voice is controlled. He says he’s sorry. He says he didn’t have a choice. He says the name of a person you don’t recognize and asks you to understand.\n\nYou don’t have time to understand. You move.",
+fireSceneKeys: ['vault_timing_clean','vault_timing_comp','vault_transfer_clean','vault_transfer_comp'],
+revealHead: 'Rook -- Signal Lost',
+revealBody: "The alarm kill was called. The alarm is still live.\n\nRook comes back on comms forty seconds later. His voice is controlled. He says he's sorry. He says he didn't have a choice. He says the name of a person you don't recognize and asks you to understand.\n\nYou don't have time to understand. You move.",
 deltaModifier: { heat: 15, ctrl: -10, window: -15 },
 },
 
@@ -112,7 +112,6 @@ deltaModifier: { heat: 15, ctrl: -10, window: -15 },
 applyRunModifiers(baseDeltas, sceneIdx, plan, state) {
 let patch = {};
 
-```
 // Fast Snatch: lower heat tolerance means extra heat in Act 4+ (scenes 5+)
 if(plan.grab === 'Fast Snatch' && sceneIdx >= 5) {
   patch.heat = (patch.heat || 0) + 5;
@@ -129,7 +128,6 @@ if(plan.grab === 'Clean Swap' && sceneIdx >= 7 && state.window < 25) {
 }
 
 return patch;
-```
 
 },
 
@@ -140,13 +138,13 @@ return patch;
 
 checkContingencyReveal(plan, cmd, quality) {
 if(
-plan.contingency === ‘Inside Blue’ &&
-[‘Hold Nerve’, ‘Signal’, ‘Trust the Plan’].includes(cmd) &&
+plan.contingency === 'Inside Blue' &&
+['Hold Nerve', 'Signal', 'Trust the Plan'].includes(cmd) &&
 quality >= 1
 ) {
 return {
-head: ‘Inside Blue -- Contingency Active’,
-body: "The backup guard makes a gesture -- one flat hand, palm down, pressed once. You’ve seen that signal before. Rook taught it to you three weeks ago in a parking structure in Brussels.\n\nThe apparent arrest becomes something else entirely.",
+head: 'Inside Blue -- Contingency Active',
+body: "The backup guard makes a gesture -- one flat hand, palm down, pressed once. You've seen that signal before. Rook taught it to you three weeks ago in a parking structure in Brussels.\n\nThe apparent arrest becomes something else entirely.",
 };
 }
 return null;
@@ -161,7 +159,6 @@ pokerBeatLine(tier, sceneCat, isReversal, isVault, quality, state) {
 const runBad   = state.heat > 55 || state.ctrl < 40 || state.planVal < 40;
 const runClean = state.heat < 25 && state.ctrl > 70 && state.planVal > 70;
 
-```
 if(tier >= 7) {
   if(isReversal) return "The hand was extraordinary. The kind of luck that doesn't announce itself -- it simply arrives, exactly when it has to.";
   if(isVault)    return 'The cards came exactly right. Vale would say the plan earned it. You know better.';
@@ -191,7 +188,6 @@ if(isReversal) {
 }
 if(isVault && quality <= 0) return 'Nothing in the hand to help. You went anyway.';
 return '';
-```
 
 },
 
@@ -205,64 +201,63 @@ endings: {
 //   reversalPerfect, exceptionalHands, exceptionalAtReversal
 verdicts: [
 {
-id: ‘plan_within_plan’,
+id: 'plan_within_plan',
 check: (s) => s.success && s.contingencyFired && s.clean && s.planIntact,
-verdict: ‘The Plan Within the Plan’,
-sub: ‘Every contingency held. Even the one nobody saw coming.’,
-cls: ‘success’,
+verdict: 'The Plan Within the Plan',
+sub: 'Every contingency held. Even the one nobody saw coming.',
+cls: 'success',
 },
 {
-id: ‘extracted’,
+id: 'extracted',
 check: (s) => s.success && s.clean && s.controlled && s.planIntact && s.windowOk && !s.betrayalRevealed,
-verdict: ‘Extracted’,
-sub: ‘Clean hands. No trace. The sapphire is gone.’,
-cls: ‘success’,
+verdict: 'Extracted',
+sub: 'Clean hands. No trace. The sapphire is gone.',
+cls: 'success',
 },
 {
-id: ‘extracted_cost’,
+id: 'extracted_cost',
 check: (s) => s.success && s.betrayalRevealed && s.controlled,
-verdict: ‘Extracted -- At a Cost’,
-sub: ‘The stone moved. So did trust.’,
-cls: ‘partial’,
+verdict: 'Extracted -- At a Cost',
+sub: 'The stone moved. So did trust.',
+cls: 'partial',
 },
 {
-id: ‘fast_quiet’,
-check: (s) => s.success && s.grab === ‘Fast Snatch’ && s.clean,
-verdict: ‘Fast and Quiet’,
-sub: ‘Nerve over elegance. It held.’,
-cls: ‘success’,
+id: 'fast_quiet',
+check: (s) => s.success && s.grab === 'Fast Snatch' && s.clean,
+verdict: 'Fast and Quiet',
+sub: 'Nerve over elegance. It held.',
+cls: 'success',
 },
 {
-id: ‘clean_hands’,
-check: (s) => s.success && s.grab === ‘Hidden Transfer’ && s.clean,
-verdict: ‘Clean Hands’,
-sub: ‘You walked out with nothing. That was the point.’,
-cls: ‘success’,
+id: 'clean_hands',
+check: (s) => s.success && s.grab === 'Hidden Transfer' && s.clean,
+verdict: 'Clean Hands',
+sub: 'You walked out with nothing. That was the point.',
+cls: 'success',
 },
 {
-id: ‘compromised’,
+id: 'compromised',
 check: (s) => s.success && (!s.clean || !s.controlled),
-verdict: ‘Compromised’,
-sub: ‘The stone moved. So did a great deal of attention.’,
-cls: ‘partial’,
+verdict: 'Compromised',
+sub: 'The stone moved. So did a great deal of attention.',
+cls: 'partial',
 },
 {
-id: ‘survived’,
+id: 'survived',
 check: (s) => s.success,
-verdict: ‘Survived’,
+verdict: 'Survived',
 sub: "It worked. Not the way it was drawn up, but it worked.",
-cls: ‘partial’,
+cls: 'partial',
 },
 {
-id: ‘burned’,
+id: 'burned',
 check: () => true,
-verdict: ‘Burned’,
-sub: ‘The sapphire stays where it was.’,
-cls: ‘failure’,
+verdict: 'Burned',
+sub: 'The sapphire stays where it was.',
+cls: 'failure',
 },
 ],
 
-```
 // Debrief line generators -- each returns a string or null.
 debriefLines: [
   // Complication shape
@@ -350,45 +345,43 @@ burnOut: [
     line: "The routes are burned. I'm scrubbing the maps. You played the hand you had. It just wasn't enough.",
   },
 ],
-```
 
 },
 
 // ── RUN STRUCTURE ────────────────────────────────────────
 // Provides scene pool selection only -- NOT run structure logic.
 // Engine calls buildRunStructure() using this map.
-// Format: { actIndex: { clean: ‘key’, comp: ‘key’ } }
-// Special keys ‘reversal’ and null (exit) are handled by the engine.
+// Format: { actIndex: { clean: 'key', comp: 'key' } }
+// Special keys 'reversal' and null (exit) are handled by the engine.
 
 actScenes: [
 // Act 0 -- Entry (single scene, determined by plan.entry)
 {
 clean: (plan) => {
-if(plan.entry === ‘Front Social’)        return ‘entry_social_clean’;
-if(plan.entry === ‘Service Route’)       return ‘entry_service_clean’;
-return ‘entry_staff_clean’;
+if(plan.entry === 'Front Social')        return 'entry_social_clean';
+if(plan.entry === 'Service Route')       return 'entry_service_clean';
+return 'entry_staff_clean';
 },
 comp: (plan) => {
-if(plan.entry === ‘Front Social’)        return ‘entry_social_comp’;
-if(plan.entry === ‘Service Route’)       return ‘entry_service_comp’;
-return ‘entry_staff_comp’;
+if(plan.entry === 'Front Social')        return 'entry_social_comp';
+if(plan.entry === 'Service Route')       return 'entry_service_comp';
+return 'entry_staff_comp';
 },
 },
 // Act 1 -- Approach (two scenes)
-{ clean: () => ‘approach_movement_clean’, comp: () => ‘approach_movement_comp’ },
-{ clean: () => ‘approach_timing_clean’,   comp: () => ‘approach_timing_comp’   },
+{ clean: () => 'approach_movement_clean', comp: () => 'approach_movement_comp' },
+{ clean: () => 'approach_timing_clean',   comp: () => 'approach_timing_comp'   },
 // Act 2 -- Vault (two scenes, share comp slot)
-{ clean: () => ‘vault_timing_clean’,      comp: () => ‘vault_timing_comp’,   actSlot: 2 },
-{ clean: () => ‘vault_transfer_clean’,    comp: () => ‘vault_transfer_comp’, actSlot: 2 },
+{ clean: () => 'vault_timing_clean',      comp: () => 'vault_timing_comp',   actSlot: 2 },
+{ clean: () => 'vault_transfer_clean',    comp: () => 'vault_transfer_comp', actSlot: 2 },
 // Act 3 -- Crisis (one scene)
-{ clean: () => ‘crisis_heat_clean’,       comp: () => ‘crisis_heat_comp’ },
+{ clean: () => 'crisis_heat_clean',       comp: () => 'crisis_heat_comp' },
 ],
 
 // ── SCENE POOL ───────────────────────────────────────────
 
 scenes: {
 
-```
 // ── ACT 1: ENTRY ─────────────────────────────────────
 
 entry_social_clean: {
@@ -821,7 +814,6 @@ exit_high_heat: {
   },
   deltas: (q) => ({ plan: 0, heat: q>=3?-8:q>=1?5:20, ctrl: q>=3?5:q>=1?0:-8, window: q>=3?-4:q>=1?-8:-14 }),
 },
-```
 
 },
 
