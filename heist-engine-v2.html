@@ -644,6 +644,7 @@ function buildLobby() {
 }
 
 function loadHeist(opManifest) {
+  if(window.HEIST_CONTENT) { initHeist(); return; }
   if(document.querySelector(`script[data-heist="${opManifest.id}"]`)) { initHeist(); return; }
   const s = document.createElement('script');
   s.src = opManifest.file;
@@ -1283,6 +1284,7 @@ window.G = (() => {
 // ═══════════════════════════════════════════════════════════
 
 (function boot() {
+  if(window.HEIST_INDEX) { buildLobby(); return; }
   const s = document.createElement('script');
   s.src = 'index.js';
   s.onload  = () => buildLobby();
@@ -1293,6 +1295,11 @@ window.G = (() => {
   document.head.appendChild(s);
 })();
 </script>
+
+<!-- Content loaded as static scripts for cross-browser reliability -->
+<script src="index.js"></script>
+<script src="vandermeer-v2.js"></script>
+<script>if(window.HEIST_INDEX) buildLobby();</script>
 
 </body>
 </html>
